@@ -23,8 +23,8 @@ describe('Tibero', () => {
     {
       title: 'select with simple Hangul Query',
       sql: [
-        `SELECT 목젖, "간" FrOm 박대연`,
-        `SELECT "목젖", "간" FROM "박대연"`
+        `SELECT 사랑, "합니다" FrOm 박대연`,
+        `SELECT "사랑", "합니다" FROM "박대연"`
       ]
     },
     {

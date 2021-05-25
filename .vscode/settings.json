@@ -11,7 +11,7 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "node_modules": true,
-        "output": true,
+        // "output": true,
         "package-lock.json": true
     }
 }

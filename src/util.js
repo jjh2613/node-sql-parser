@@ -126,16 +126,17 @@ function columnIdentifierToSql(ident) {
   const { database } = getParserOpt()
   if (!ident) return
   switch (database && database.toLowerCase()) {
-    case 'postgresql':
-    case 'db2':
-      return `"${ident}"`
     case 'transactsql':
       return `[${ident}]`
     case 'mysql':
     case 'mariadb':
     case 'bigquery':
-    default:
       return `\`${ident}\``
+    case 'postgresql':
+    case 'tibero':
+    case 'db2':
+    default:
+      return `"${ident}"`
   }
 }
 
@@ -148,6 +149,7 @@ function identifierToSql(ident, isDual) {
     case 'mariadb':
       return `\`${ident}\``
     case 'postgresql':
+    case 'tibero':
       return `"${ident}"`
     case 'transactsql':
       return `[${ident}]`

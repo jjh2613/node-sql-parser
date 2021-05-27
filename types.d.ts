@@ -44,6 +44,13 @@ export interface ColumnRef {
   table: string | null;
   column: string;
 }
+
+export interface ColumnRefWithJoinMark {
+  type: 'column_ref_with_join_mark';
+  table: string | null;
+  column: string;
+}
+
 export interface SetList {
   column: string;
   value: any;

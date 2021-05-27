@@ -28,6 +28,14 @@ describe('Tibero', () => {
       ]
     },
     {
+      title: 'select with join keys',
+      sql: [
+        `SELECT col1, COL2, col3 FROM TAB, TAB2 WHERE (aa.col1(+) = bb.col2) or (aa.col4(+) = cc.col5(+))`,
+        // `SELECT "COL1", "COL2", "col3" FROM ("aa"."col1"(+) = "bb".COL2) or ("AA"."col4" = "CC"."COL5")`
+        `SELECT "col1", "COL2", "col3" FROM "TAB", "TAB2" WHERE ("aa"."col1" (+) = "bb"."col2") OR ("aa"."col4" (+) = "cc"."col5" (+))`
+      ]
+    },
+    {
       title: 'select with_query_name',
       sql: [
         `WITH

@@ -2529,6 +2529,23 @@ column_ref
         property: j
       };
   }
+  / tbl:ident __ DOT __ col:column_with_join {
+      columnList.add(`select::${tbl}::${col}`);
+      return {
+        type: 'column_ref_with_join_mark',
+        table: tbl,
+        column: col
+      };
+    }
+  / col:column_with_join {
+    // => IGNORE
+      columnList.add(`select::null::${col}`);
+      return {
+        type: 'column_ref_with_join_mark',
+        table: null,
+        column: col
+      };
+    } // 테이블.컬럼(+) 는 존재하지만 컬럼(+) 만 있는것은 없다. 하지만 1(+) 같은건 있다.
   / tbl:ident __ DOT __ col:column {
       /* => {
         type: 'column_ref';
@@ -2597,12 +2614,20 @@ single_quoted_ident
 backticks_quoted_ident
   = "`" chars:[^`]+ "`" { /* => string */ return chars.join(''); }
 
+column_with_join
+  = name:column_name_with_join !{ return reservedMap[name.toUpperCase()] === true; } { /* => string */ return name; }
+  / quoted_ident
+
 column
   = name:column_name !{ return reservedMap[name.toUpperCase()] === true; } { /* => string */ return name; }
   / quoted_ident
 
 column_name
   =  start:ident_start parts:column_part* { /* => string */ return start + parts.join(''); }
+
+column_name_with_join
+  // =  start:ident_start parts:column_part* __ join_mark: join_mark_part { /* => string */ return start + parts.join('') + join_mark.join(''); }
+  =  start:ident_start parts:column_part* __ join_mark: join_mark_part { /* => string */ return start + parts.join(''); }
 
 ident_name
   =  start:ident_start parts:ident_part* {
@@ -2613,6 +2638,8 @@ ident_name
 ident_start = [A-Za-zㄱ-ㅎ가-힣陳_]
 
 ident_part  = [A-Za-z0-9ㄱ-ㅎ가-힣陳_\-]
+
+join_mark_part = __ LPAREN __ PLUS __ RPAREN
 
 // to support column name like `cf1:name` in hbase
 column_part  = [A-Za-z0-9ㄱ-ㅎ가-힣陳_]

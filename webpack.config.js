@@ -37,7 +37,8 @@ const moduleCfg = {
         },
         {
             test: /\.pegjs$/,
-            loader: 'pegjs-loader?dependencies={"BigInt":"big-integer"}&trace=true'
+            // loader: 'pegjs-loader?dependencies={"BigInt":"big-integer"}&trace=true'
+            loader: 'pegjs-loader?dependencies={"BigInt":"big-integer"}'
         }
     ],
 }

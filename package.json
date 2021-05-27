@@ -7,7 +7,8 @@
   "scripts": {
     "start": "webpack --config webpack.config.js",
     "dev": "webpack-dev-server --config webpack.devserver.config.js --dev",
-    "build": "npm run lint && npm run compile && webpack --config webpack.config.js --prod",
+    "build_fake": "npm run compile && webpack --config webpack.config.js --prod",
+    "build": "npm run lint && npm run compile && webpack --config webpack.config.js --prod",    
     "test": "npm run lint && mochapack \"test/**/*.spec.js\"",
     "lint": "eslint src",
     "compile": "babel src -d lib",

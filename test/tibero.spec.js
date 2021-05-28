@@ -17,22 +17,22 @@ describe('Tibero', () => {
       title: 'select with simple 陳 Query',
       sql: [
         `SELECT 陳 FrOm 박대연`,
-        `SELECT "陳" FROM "박대연"`
+        `SELECT 陳 FROM 박대연`
       ]
     },
     {
       title: 'select with simple Hangul Query',
       sql: [
-        `SELECT 사랑, "합니다" FrOm 박대연`,
-        `SELECT "사랑", "합니다" FROM "박대연"`
+        `SELECT 사랑, "합니다" FrOm "박대연"`,
+        `SELECT 사랑, "합니다" FROM "박대연"`
       ]
     },
     {
       title: 'select with join keys',
       sql: [
-        `SELECT col1, COL2, col3 FROM TAB, TAB2 WHERE (aa.col1(+) = bb.col2) or (aa.col4(+) = cc.col5(+))`,
+        `SELECT "col1", COL2, col3 FROM TAB, TAB2, user1."tab1", "user2".tab2 WHERE col2(+) = "aa".col1(+) and aa."col3"(+) = "aa"."col4"(+)`,
         // `SELECT "COL1", "COL2", "col3" FROM ("aa"."col1"(+) = "bb".COL2) or ("AA"."col4" = "CC"."COL5")`
-        `SELECT "col1", "COL2", "col3" FROM "TAB", "TAB2" WHERE ("aa"."col1" (+) = "bb"."col2") OR ("aa"."col4" (+) = "cc"."col5" (+))`
+        `SELECT "col1", COL2, COL3 FROM TAB, TAB2, USER1."tab1", "user2".TAB2 WHERE COL2 (+) = "aa".COL1 (+) AND AA."col3" (+) = "aa"."col4" (+)`
       ]
     },
     {

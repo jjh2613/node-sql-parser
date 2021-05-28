@@ -2606,7 +2606,7 @@ quoted_ident
   / backticks_quoted_ident
 
 double_quoted_ident
-  = '"' chars:[^"]+ '"' { /* => string */ return chars.join(''); }
+  = '"' chars:[^"]+ '"' { /* => string */ return '"' + chars.join('') + '"'; }
 
 single_quoted_ident
   = "'" chars:[^']+ "'" { /* => string */ return chars.join(''); }
@@ -2615,8 +2615,7 @@ backticks_quoted_ident
   = "`" chars:[^`]+ "`" { /* => string */ return chars.join(''); }
 
 column_with_join
-  = name:column_name_with_join !{ return reservedMap[name.toUpperCase()] === true; } { /* => string */ return name; }
-  / quoted_ident
+  = name:(column_name_with_join/column_name_with_join_double_quoted) !{ return reservedMap[name.toUpperCase()] === true; } { /* => string */ return name; }  
 
 column
   = name:column_name !{ return reservedMap[name.toUpperCase()] === true; } { /* => string */ return name; }
@@ -2628,6 +2627,11 @@ column_name
 column_name_with_join
   // =  start:ident_start parts:column_part* __ join_mark: join_mark_part { /* => string */ return start + parts.join('') + join_mark.join(''); }
   =  start:ident_start parts:column_part* __ join_mark: join_mark_part { /* => string */ return start + parts.join(''); }
+
+column_name_with_join_double_quoted
+  // =  start:ident_start parts:column_part* __ join_mark: join_mark_part { /* => string */ return start + parts.join('') + join_mark.join(''); }
+  = '"' start:ident_start parts:column_part* '"' __ join_mark: join_mark_part { /* => string */ return '"' + start + parts.join('') + '"'; }
+
 
 ident_name
   =  start:ident_start parts:ident_part* {
@@ -2951,20 +2955,22 @@ literal_bool
     }
 
 literal_string
-  = ca:("'" single_char* "'") {
+  = ca:("'" single_char_in_col* "'") {
       // => { type: 'single_quote_string'; value: string; }
       return {
         type: 'single_quote_string',
         value: ca[1].join('')
       };
     }
-  / ca:("\"" single_quote_char* "\"") !DOT {
-      // => { type: 'string'; value: string; }
-      return {
-        type: 'double_quote_string',
-        value: ca[1].join('')
-      };
-    }
+
+  // 오라클은 double quote string이 literal 일 수가 없음
+  // / ca:("\"" single_quote_char* "\"") !DOT {
+  //     // => { type: 'string'; value: string; }
+  //     return {
+  //       type: 'double_quote_string',
+  //       value: ca[1].join('')
+  //     };
+  //   }
 
 literal_datetime
   = type:(KW_TIME / KW_DATE / KW_TIMESTAMP / KW_DATETIME) __ ca:("'" single_char* "'") {
@@ -2984,6 +2990,10 @@ literal_datetime
 
 single_quote_char
   = [^"\\\0-\x1F\x7f]
+  / escape_char
+
+single_char_in_col
+  = [^'^"\\]
   / escape_char
 
 single_char

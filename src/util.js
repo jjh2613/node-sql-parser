@@ -132,8 +132,9 @@ function columnIdentifierToSql(ident) {
     case 'mariadb':
     case 'bigquery':
       return `\`${ident}\``
-    case 'postgresql':
     case 'tibero':
+      return ident.includes('"') ? `${ident}` : `${ident.toUpperCase()}`
+    case 'postgresql':
     case 'db2':
     default:
       return `"${ident}"`
@@ -149,8 +150,9 @@ function identifierToSql(ident, isDual) {
     case 'mariadb':
       return `\`${ident}\``
     case 'postgresql':
-    case 'tibero':
       return `"${ident}"`
+    case 'tibero':
+      return ident.includes('"') ? `${ident}` : `${ident.toUpperCase()}`
     case 'transactsql':
       return `[${ident}]`
     case 'bigquery':

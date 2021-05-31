@@ -1817,9 +1817,12 @@ table_base
     }
 
 join_op
-  = KW_LEFT __ KW_OUTER? __ KW_JOIN { /* => 'LEFT JOIN' */ return 'LEFT JOIN'; }
-  / KW_RIGHT __ KW_OUTER? __ KW_JOIN { /* =>  'RIGHT JOIN' */ return 'RIGHT JOIN'; }
-  / KW_FULL __ KW_OUTER? __ KW_JOIN { /* => 'FULL JOIN' */ return 'FULL JOIN'; }
+  = KW_LEFT __ KW_OUTER? __ KW_JOIN { /* => 'LEFT JOIN' */ return 'LEFT OUTER JOIN'; }
+  / KW_RIGHT __ KW_OUTER? __ KW_JOIN { /* =>  'RIGHT JOIN' */ return 'RIGHT OUTER JOIN'; }
+  / KW_FULL __ KW_OUTER? __ KW_JOIN { /* => 'FULL JOIN' */ return 'FULL OUTER JOIN'; }
+  / KW_CROSS __ KW_JOIN { /* => 'FULL JOIN' */ return 'CROSS JOIN'; }
+  / KW_NATURAL __ KW_JOIN { /* => 'FULL JOIN' */ return 'NATURAL JOIN'; }
+  / KW_FULL __ KW_OUTER? __ KW_JOIN { /* => 'FULL JOIN' */ return 'FULL OUTER JOIN'; }
   / (KW_INNER __)? KW_JOIN { /* => 'INNER JOIN' */ return 'INNER JOIN'; }
 
 table_name
@@ -3127,6 +3130,8 @@ KW_ON       = "ON"i       !ident_start
 KW_LEFT     = "LEFT"i     !ident_start
 KW_RIGHT    = "RIGHT"i    !ident_start
 KW_FULL     = "FULL"i     !ident_start
+KW_CROSS    = "CROSS"i    !ident_start
+KW_NATURAL    = "NATURAL"i    !ident_start
 KW_INNER    = "INNER"i    !ident_start
 KW_JOIN     = "JOIN"i     !ident_start
 KW_OUTER    = "OUTER"i    !ident_start

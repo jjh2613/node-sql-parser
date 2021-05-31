@@ -1604,9 +1604,9 @@ function peg$parse(input, options) {
               as: alias
             };
           },
-      peg$c299 = function() { /* => 'LEFT JOIN' */ return 'LEFT JOIN'; },
-      peg$c300 = function() { /* =>  'RIGHT JOIN' */ return 'RIGHT JOIN'; },
-      peg$c301 = function() { /* => 'FULL JOIN' */ return 'FULL JOIN'; },
+      peg$c299 = function() { /* => 'LEFT JOIN' */ return 'LEFT OUTER JOIN'; },
+      peg$c300 = function() { /* =>  'RIGHT JOIN' */ return 'RIGHT OUTER JOIN'; },
+      peg$c301 = function() { /* => 'FULL JOIN' */ return 'FULL OUTER JOIN'; },
       peg$c302 = function() { /* => 'INNER JOIN' */ return 'INNER JOIN'; },
       peg$c303 = function(dt, schema, tail) {
             // => { db?: ident; table: ident | '*'; }

@@ -2,5 +2,6 @@
 # https://github.com/taozhi8833998/node-sql-parser
 # https://yarnpkg.com/package/node-sql-parser
 
-# It is For Test (Please mail me if there's problem here)
+# This is For Test
+# Please mail me if there are any problems here
 # Nodejs SQL Parser (For Tibero)

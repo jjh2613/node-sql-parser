@@ -28,57 +28,61 @@ describe('Tibero', () => {
       ]
     },
     {
-      title: 'select with join keys',
+      title: 'select with join keys, tab names, nested parenthese in where',
       sql: [
-        `SELECT "col1", COL2, col3 FROM TAB, TAB2, user1."tab1", "user2".tab2 WHERE col2(+) = "aa".col1(+) and aa."col3"(+) = "aa"."col4"(+)`,
-        // `SELECT "COL1", "COL2", "col3" FROM ("aa"."col1"(+) = "bb".COL2) or ("AA"."col4" = "CC"."COL5")`
-        `SELECT "col1", COL2, COL3 FROM TAB, TAB2, USER1."tab1", "user2".TAB2 WHERE COL2 (+) = "aa".COL1 (+) AND AA."col3" (+) = "aa"."col4" (+)`
+        `SELECT "col1", COL2, col3 FROM "user1".TAB1, "tab2", user3.TAB3, "user4"."tab4", user5."tab5" WHERE ("aa".col1(+) = "bb"."col2" (+)) or (aa.col4 = cc.col5(+))`,
+        `SELECT "col1", COL2, COL3 FROM "user1".TAB1, "tab2", USER3.TAB3, "user4"."tab4", USER5."tab5" WHERE ("aa".COL1 (+) = "bb"."col2" (+)) OR (AA.COL4 = CC.COL5 (+))`
       ]
     },
     {
-      title: 'select with_query_name',
+      title: 'Update Query With Sub Query',
       sql: [
-        `WITH
-        subQ1 AS (SELECT * FROM Roster WHERE SchoolID = 52),
-        subQ2 AS (SELECT SchoolID FROM subQ1)
-      SELECT DISTINCT * FROM subQ2;`,
-      `WITH subQ1 AS (SELECT * FROM "Roster" WHERE "SchoolID" = 52), subQ2 AS (SELECT "SchoolID" FROM "subQ1") SELECT DISTINCT * FROM "subQ2"`
+        `UPDATE TEAM A SET A.E_TEAM_NAME = (SELECT X."stadium_name" FROM STADIUM X WHERE X.STADIUM_ID = A.STADIUM_ID)`,
+        `UPDATE TEAM AS A SET A.E_TEAM_NAME = (SELECT X."stadium_name" FROM STADIUM AS X WHERE X.STADIUM_ID = A.STADIUM_ID)`
     ]
     },
     {
-      title: 'select subquery',
+      title: 'FULL OUTER JOIN',
       sql: [
-        `SELECT AVG ( PointsScored )
-        FROM
-        ( SELECT PointsScored
-          FROM Stats
-          WHERE SchoolID = 77 )`,
-        'SELECT AVG("PointsScored") FROM (SELECT "PointsScored" FROM "Stats" WHERE "SchoolID" = 77)'
+        `select * from dept FULL OUTER join dept_team on dept."deptno" = dept_team.deptno`,
+        'SELECT * FROM DEPT FULL OUTER JOIN DEPT_TEAM ON DEPT."deptno" = DEPT_TEAM.DEPTNO'
       ]
     },
     {
-      title: 'select subquery have alias',
+      title: 'Innet Join',
       sql: [
-        `SELECT r.LastName
-        FROM
-        ( SELECT * FROM Roster) AS r`,
-        'SELECT "r"."LastName" FROM (SELECT * FROM "Roster") AS "r"'
+        `select worker.empno, worker.ename, manager.ename from emp worker inner join emp manager on(worker.mgr = manager.empno)`,
+        'SELECT WORKER.EMPNO, WORKER.ENAME, MANAGER.ENAME FROM EMP AS WORKER INNER JOIN EMP AS MANAGER ON (WORKER.MGR = MANAGER.EMPNO)'
+      ]
+    },
+    {
+      title: 'CROSS JOIN"',
+      sql: [
+        'SELECT * FROM sample.contacts a CROSS JOIN sample.customers b',
+        'SELECT * FROM SAMPLE.CONTACTS AS A CROSS JOIN SAMPLE.CUSTOMERS AS B'
+      ]
+    },
+    {
+      title: 'Natural JOIN"',
+      sql: [
+        'SELECT * FROM SAMPLE.CONTACTS AS A Natural JOIN SAMPLE.CUSTOMERS AS B',
+        'SELECT * FROM SAMPLE.CONTACTS AS A NATURAL JOIN SAMPLE.CUSTOMERS AS B'
       ]
     },
     {
       title: 'select implicit "comma cross join"',
       sql: [
-        'SELECT * FROM Roster, TeamMascot',
-        'SELECT * FROM "Roster", "TeamMascot"'
+        'SELECT * FROM "Roster", TeamMascot',
+        'SELECT * FROM "Roster", TEAMMASCOT'
       ]
     },
     {
       title: 'select inner join using',
       sql: [
         `SELECT FirstName
-        FROM Roster INNER JOIN PlayerStats
+        FROM "Roster" INNER JOIN PlayerStats
         USING (LastName);`,
-        'SELECT "FirstName" FROM "Roster" INNER JOIN "PlayerStats" USING ("LastName")'
+        'SELECT FIRSTNAME FROM "Roster" INNER JOIN PLAYERSTATS USING (LASTNAME)'
       ]
     },
     {

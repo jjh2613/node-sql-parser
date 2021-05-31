@@ -8,6 +8,8 @@ import pegjsParser from "../output/prod"
 const log_gogo = (tree) => {
   console.log("origin tree")
   console.log(tree)
+  console.log("set operator tree")
+  console.log(tree.children[0].children[1].children[0])
   // console.log("select tree")
   // console.log(tree.children[0].children[1].children[0].children[0].children[0])
   // console.log("where tree")
@@ -29,7 +31,13 @@ simpleString = `select worker.empno, worker.ename, manager.ename from emp worker
 simpleString = `SELECT * FROM sample.contacts a CROSS JOIN sample.customers b`
 simpleString = `SELECT * FROM sample.contacts a natural JOIN sample.customers b`
 simpleString = `SELECT FirstName FROM "Roster" INNER JOIN PlayerStats USING (LastName)`
-
+simpleString = `SELECT DEPTNO FROM EMP UNION SELECT DEPTNO FROM DEPT`
+simpleString = `SELECT DEPTNO FROM EMP UNION ALL SELECT DEPTNO FROM DEPT`
+simpleString = `SELECT DNAME, JOB, MGR, SUM(SAL) FROM EMP, DEPT WHERE DEPT.DEPTNO = EMP.DEPTNO GROUP BY ROLLUP(DNAME, (JOB, MGR))`
+simpleString = `SELECT DNAME, JOB, MGR, SUM(SAL) FROM EMP, DEPT WHERE DEPT.DEPTNO = EMP.DEPTNO GROUP BY CUBE(DNAME, (JOB, MGR))`
+simpleString =
+`SELECT DEPTNO FROM EMP union all SELECT DEPTNO FROM DEPT intersect SELECT DEPTNO2 FROM DEPT2 minus SELECT DEPTNO2 FROM DEPT2`
+                            
 
 const parser = tiberoParser;
 

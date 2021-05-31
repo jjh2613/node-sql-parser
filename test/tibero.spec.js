@@ -86,6 +86,62 @@ describe('Tibero', () => {
       ]
     },
     {
+      title: 'select union query',
+      sql: [
+        `SELECT DEPTNO FROM EMP UNION SELECT DEPTNO FROM DEPT`,
+        'SELECT DEPTNO FROM EMP UNION SELECT DEPTNO FROM DEPT'
+      ]
+    },
+    {
+      title: 'select union all query',
+      sql: [
+        `SELECT DEPTNO FROM EMP UNION ALL SELECT DEPTNO FROM DEPT`,
+        `SELECT DEPTNO FROM EMP UNION ALL SELECT DEPTNO FROM DEPT`
+      ]
+    },
+    {
+      title: 'select union query',
+      sql: [
+        `SELECT DEPTNO FROM EMP UNION SELECT DEPTNO FROM DEPT`,
+        `SELECT DEPTNO FROM EMP UNION SELECT DEPTNO FROM DEPT`
+      ]
+    },
+    {
+      title: 'select intersect query',
+      sql: [
+        `SELECT DEPTNO FROM EMP intersect SELECT DEPTNO FROM DEPT`,
+        `SELECT DEPTNO FROM EMP INTERSECT SELECT DEPTNO FROM DEPT`
+      ]
+    },
+    {
+      title: 'select minus query',
+      sql: [
+        `SELECT DEPTNO FROM EMP minus SELECT DEPTNO FROM DEPT`,
+        `SELECT DEPTNO FROM EMP MINUS SELECT DEPTNO FROM DEPT`
+      ]
+    },
+    {
+      title: 'select nested operator query',
+      sql: [
+        `SELECT DEPTNO FROM EMP union all SELECT DEPTNO FROM DEPT intersect SELECT DEPTNO2 FROM DEPT2 minus SELECT DEPTNO2 FROM DEPT2`,
+        `SELECT DEPTNO FROM EMP UNION ALL SELECT DEPTNO FROM DEPT INTERSECT SELECT DEPTNO2 FROM DEPT2 MINUS SELECT DEPTNO2 FROM DEPT2`
+      ]
+    },
+    {
+      title: 'Group By Roll Up Query',
+      sql: [
+        `SELECT DNAME, JOB, MGR, SUM(SAL) FROM EMP, DEPT WHERE DEPT.DEPTNO = EMP.DEPTNO GROUP BY ROLLUP(DNAME, (JOB, MGR))`,
+        `SELECT DNAME, JOB, MGR, SUM(SAL) FROM EMP, DEPT WHERE DEPT.DEPTNO = EMP.DEPTNO GROUP BY ROLLUP(DNAME, (JOB,MGR))`
+      ]
+    },
+    {
+      title: 'Group By Cube Query',
+      sql: [
+        `SELECT DNAME, JOB, MGR, SUM(SAL) FROM EMP, DEPT WHERE DEPT.DEPTNO = EMP.DEPTNO GROUP BY CUBE(DNAME, (JOB, MGR))`,
+        `SELECT DNAME, JOB, MGR, SUM(SAL) FROM EMP, DEPT WHERE DEPT.DEPTNO = EMP.DEPTNO GROUP BY CUBE(DNAME, (JOB,MGR))`
+      ]
+    },
+    {
         title: 'Window Fns with qualified frame clause',
         sql: [
           `SELECT

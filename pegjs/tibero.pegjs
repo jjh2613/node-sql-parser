@@ -79,6 +79,9 @@
     'TYPE': true,   // reserved (MySQL)
 
     'UNION': true,
+    'MINUS': true,
+    'INTERSECT': true,
+
     'UPDATE': true,
     'USING': true,
 
@@ -231,7 +234,7 @@ alter_stmt
   = alter_table_stmt
 
 crud_stmt
-  = union_stmt
+  = set_operator_stmt
   / update_stmt
   / replace_insert_stmt
   / insert_no_columns_stmt
@@ -257,8 +260,31 @@ multiple_stmt
       }
     }
 
-union_stmt
-  = head:select_stmt tail:(__ KW_UNION __ KW_ALL? __ select_stmt)* __ ob: order_by_clause? __ l:limit_clause? {
+union_operator_stmt
+  = ss: (__ KW_UNION __ KW_ALL? __ select_stmt) {
+    return {
+      'type': 'union',
+      'content': ss
+    }
+  }
+
+minus_operator_stmt
+  = ss: (__ KW_MINUS __ select_stmt) {
+    return {
+      'type': 'minus',
+      'content': ss
+    }
+  }
+intersect_operator_stmt
+  = ss: (__ KW_INTERSECT __ select_stmt) {
+    return {
+      'type': 'intersect',
+      'content': ss
+    }
+  }
+
+set_operator_stmt
+  = head:select_stmt tail:(union_operator_stmt/minus_operator_stmt/intersect_operator_stmt)* __ ob: order_by_clause? __ l:limit_clause? {
      /* export interface union_stmt_node extends select_stmt_node  {
          _next: union_stmt_node;
          union: 'union' | 'union all';
@@ -267,9 +293,15 @@ union_stmt
      */
       let cur = head
       for (let i = 0; i < tail.length; i++) {
-        cur._next = tail[i][5]
-        cur.union = tail[i][3] ? 'union all' : 'union'
-        cur = cur._next
+        if(tail[i].type == 'union') {
+          cur._next = tail[i].content[5]
+          // cur.union = tail[i][3] ? 'union all' : 'union'
+          cur.union = tail[i].content[1][0] + (tail[i].content[3] ? ' all' : '')
+        }else {
+          cur._next = tail[i].content[3]
+          cur.union = tail[i].content[1][0]
+        }       
+        cur = cur._next 
       }
       if(ob) head._orderby = ob
       if(l) head._limit = l
@@ -359,7 +391,7 @@ create_table_stmt
     to:table_options? __
     ir: (KW_IGNORE / KW_REPLACE)? __
     as: KW_AS? __
-    qe: union_stmt? {
+    qe: set_operator_stmt? {
       /*
       export type create_table_stmt_node = create_table_stmt_node_simple | create_table_stmt_node_like;
       export interface create_table_stmt_node_base {
@@ -1533,7 +1565,7 @@ with_clause
     }
 
 cte_definition
-  = name:ident_name __ columns:cte_column_definition? __ KW_AS __ LPAREN __ stmt:union_stmt __ RPAREN {
+  = name:ident_name __ columns:cte_column_definition? __ KW_AS __ LPAREN __ stmt:set_operator_stmt __ RPAREN {
     // => { name: ident_name; stmt: union_stmt; columns?: cte_column_definition; }
       return { name, stmt, columns };
     }
@@ -1770,7 +1802,7 @@ table_join
       t.on   = expr;
       return t;
     }
-  / op:join_op __ LPAREN __ stmt:union_stmt __ RPAREN __ alias:alias_clause? __ expr:on_clause? {
+  / op:join_op __ LPAREN __ stmt:set_operator_stmt __ RPAREN __ alias:alias_clause? __ expr:on_clause? {
     /* => {
       expr: union_stmt & { parentheses: true; };
       as?: alias_clause;
@@ -1807,7 +1839,7 @@ table_base
         };
       }
     }
-  / LPAREN __ stmt:union_stmt __ RPAREN __ alias:alias_clause? {
+  / LPAREN __ stmt:set_operator_stmt __ RPAREN __ alias:alias_clause? {
     // => { expr: union_stmt; as?: alias_clause; }
       stmt.parentheses = true;
       return {
@@ -2361,7 +2393,7 @@ comparison_expr
   / column_ref
 
 exists_expr
-  = op:exists_op __ LPAREN __ stmt:union_stmt __ RPAREN {
+  = op:exists_op __ LPAREN __ stmt:set_operator_stmt __ RPAREN {
     // => unary_expr
     stmt.parentheses = true;
     return createUnaryExpr(op, stmt);
@@ -3136,6 +3168,8 @@ KW_INNER    = "INNER"i    !ident_start
 KW_JOIN     = "JOIN"i     !ident_start
 KW_OUTER    = "OUTER"i    !ident_start
 KW_UNION    = "UNION"i    !ident_start
+KW_MINUS    = "MINUS"i    !ident_start
+KW_INTERSECT    = "INTERSECT"i    !ident_start
 KW_VALUES   = "VALUES"i   !ident_start
 KW_USING    = "USING"i    !ident_start
 

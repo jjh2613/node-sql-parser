@@ -5,3 +5,7 @@
 # This is For Test
 # Please mail me if there are any problems here
 # Nodejs SQL Parser (For Tibero)
+
+
+# tibere.specjs Reference
+# https://mingg123.tistory.com/22

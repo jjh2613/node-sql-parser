@@ -55,6 +55,7 @@ try{
   log_gogo(tracer.getParseTree())
 }
 console.log(token)
+console.log(JSON.stringify(token, null, '\t'))
 
 
 console.log("Real Parser")

@@ -148,70 +148,46 @@ describe('Tibero', () => {
             first_name,
             SUM(user_age) OVER (PARTITION BY user_city ORDER BY created_at DESC) AS age_window
           FROM roster`,
-          'SELECT "first_name", SUM("user_age") OVER (PARTITION BY "user_city" ORDER BY "created_at" DESC) AS "age_window" FROM "roster"'
+          'SELECT FIRST_NAME, SUM(USER_AGE) OVER (PARTITION BY USER_CITY ORDER BY CREATED_AT DESC) AS AGE_WINDOW FROM ROSTER'
         ]
     },
     {
-        title: 'Window Fns',
+        title: 'Window Fns - range, 20 preceding, current row',
         sql: [
-          `SELECT
-            first_name,
-            SUM(user_age) OVER (PARTITION BY user_city ORDER BY created_at) AS age_window
-          FROM roster`,
-          'SELECT "first_name", SUM("user_age") OVER (PARTITION BY "user_city" ORDER BY "created_at" ASC) AS "age_window" FROM "roster"'
+          `select max(standard_cost) over (partition by category_id order by product_id desc range between 20 preceding and current row) from sample.products`,
+          'SELECT MAX(STANDARD_COST) OVER (PARTITION BY CATEGORY_ID ORDER BY PRODUCT_ID DESC RANGE BETWEEN 20 PRECEDING AND CURRENT ROW) FROM SAMPLE.PRODUCTS'
         ]
     },
     {
-        title: 'Window Fns + ROWS following',
+        title: 'Window Fns - rows, unbounded following, current row',
         sql: [
-          `SELECT
-            first_name,
-            SUM(user_age) OVER (
-                PARTITION BY user_city
-                ORDER BY created_at ASC
-                ROWS 1 FOLLOWING
-            ) AS age_window
-          FROM roster`,
-          'SELECT "first_name", SUM("user_age") OVER (PARTITION BY "user_city" ORDER BY "created_at" ASC ROWS 1 FOLLOWING) AS "age_window" FROM "roster"'
+          `select max(standard_cost) over (partition by category_id order by product_id desc rows between current row and unbounded following) from sample.products`,
+          'SELECT MAX(STANDARD_COST) OVER (PARTITION BY CATEGORY_ID ORDER BY PRODUCT_ID DESC ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING) FROM SAMPLE.PRODUCTS'
         ]
     },
     {
-        title: 'Window Fns + ROWS unbounded following',
+        title: 'Window Fns - range, unbounded preceding w/o between',
         sql: [
           `SELECT
             first_name,
             SUM(user_age) OVER (
                 PARTITION BY user_city
                 ORDER BY created_at ASC
-                ROWS UNbounded FOLLOWING
+                range UNbounded preceding
             ) AS age_window
           FROM roster`,
-          'SELECT "first_name", SUM("user_age") OVER (PARTITION BY "user_city" ORDER BY "created_at" ASC ROWS UNBOUNDED FOLLOWING) AS "age_window" FROM "roster"'
+          'SELECT FIRST_NAME, SUM(USER_AGE) OVER (PARTITION BY USER_CITY ORDER BY CREATED_AT ASC RANGE UNBOUNDED PRECEDING) AS AGE_WINDOW FROM ROSTER'
         ]
     },
     {
-        title: 'Window Fns + ROWS unbounded preceding',
-        sql: [
-          `SELECT
-            first_name,
-            SUM(user_age) OVER (
-                PARTITION BY user_city
-                ORDER BY created_at ASC
-                ROWS UNbounded preceding
-            ) AS age_window
-          FROM roster`,
-          'SELECT "first_name", SUM("user_age") OVER (PARTITION BY "user_city" ORDER BY "created_at" ASC ROWS UNBOUNDED PRECEDING) AS "age_window" FROM "roster"'
-        ]
-    },
-    {
-        title: 'Window Fns + ROWS between',
+        title: 'Window Fns (RANGE) + Window Fns (ROWS) - Multiple',
         sql: [
           `SELECT
             first_name,
             SUM(user_age) OVER (
                 PARTITION BY user_city
                 ORDER BY created_at DESC
-                ROWS BETWEEN 1 preceding AND 5 FOLLOWING
+                RANGE BETWEEN 1 preceding AND 5 FOLLOWING
             ) AS age_window,
             SUM(user_age) OVER (
                 PARTITION BY user_city
@@ -219,21 +195,7 @@ describe('Tibero', () => {
                 ROWS BETWEEN unbounded preceding AND unbounded following
             ) AS age_window2
           FROM roster`,
-          'SELECT "first_name", SUM("user_age") OVER (PARTITION BY "user_city" ORDER BY "created_at" DESC ROWS BETWEEN 1 PRECEDING AND 5 FOLLOWING) AS "age_window", SUM("user_age") OVER (PARTITION BY "user_city" ORDER BY "created_at" DESC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "age_window2" FROM "roster"'
-        ]
-    },
-    {
-        title: 'Window Fns + ROWS unbounded preceding + current row',
-        sql: [
-          `SELECT
-            first_name,
-            SUM(user_age) OVER (
-                PARTITION BY user_city
-                ORDER BY created_at, user_id ASC
-                ROWS BETWEEN UNbounded preceding AND CURRENT ROW
-            ) AS age_window
-          FROM roster`,
-          'SELECT "first_name", SUM("user_age") OVER (PARTITION BY "user_city" ORDER BY "created_at" ASC, "user_id" ASC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS "age_window" FROM "roster"'
+          'SELECT FIRST_NAME, SUM(USER_AGE) OVER (PARTITION BY USER_CITY ORDER BY CREATED_AT DESC RANGE BETWEEN 1 PRECEDING AND 5 FOLLOWING) AS AGE_WINDOW, SUM(USER_AGE) OVER (PARTITION BY USER_CITY ORDER BY CREATED_AT DESC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS AGE_WINDOW2 FROM ROSTER'
         ]
     },
     {
@@ -245,7 +207,7 @@ describe('Tibero', () => {
                 ORDER BY created_at
             ) AS age_window
           FROM roster`,
-          'SELECT ROW_NUMBER() OVER (PARTITION BY "user_city" ORDER BY "created_at" ASC) AS "age_window" FROM "roster"'
+          'SELECT ROW_NUMBER() OVER (PARTITION BY USER_CITY ORDER BY CREATED_AT ASC) AS AGE_WINDOW FROM ROSTER'
         ]
     },
     {
@@ -254,7 +216,7 @@ describe('Tibero', () => {
           `SELECT
             DENSE_RANK() OVER () AS age_window
           FROM roster`,
-          'SELECT DENSE_RANK() OVER () AS "age_window" FROM "roster"'
+          'SELECT DENSE_RANK() OVER () AS AGE_WINDOW FROM ROSTER'
         ]
     },
     {
@@ -266,7 +228,7 @@ describe('Tibero', () => {
                 ORDER BY created_at
             ) AS age_window
           FROM roster`,
-          'SELECT LAG("user_name", 10) RESPECT NULLS OVER (PARTITION BY "user_city" ORDER BY "created_at" ASC) AS "age_window" FROM "roster"'
+          'SELECT LAG(USER_NAME, 10) OVER (PARTITION BY USER_CITY ORDER BY CREATED_AT ASC) AS AGE_WINDOW FROM ROSTER'
         ]
     },
     {
@@ -278,43 +240,35 @@ describe('Tibero', () => {
               ORDER BY created_at
           ) AS age_window
         FROM roster`,
-        'SELECT LEAD("user_name", 10) RESPECT NULLS OVER (PARTITION BY "user_city" ORDER BY "created_at" ASC) AS "age_window" FROM "roster"'
+        'SELECT LEAD(USER_NAME, 10) OVER (PARTITION BY USER_CITY ORDER BY CREATED_AT ASC) AS AGE_WINDOW FROM ROSTER'
       ]
     },
-    {
-      title: 'Window Fns + NTH_VALUE',
-      sql: [
-        `SELECT
-        NTH_VALUE(user_name, 10) OVER (
-              PARTITION BY user_city
-              ORDER BY created_at
-          ) AS age_window
-        FROM roster`,
-        'SELECT NTH_VALUE("user_name", 10) RESPECT NULLS OVER (PARTITION BY "user_city" ORDER BY "created_at" ASC) AS "age_window" FROM "roster"'
-      ]
-    },
-    {
-        title: 'Window Fns + LAG + explicit NULLS',
-        sql: [
-          `SELECT
-            LAG(user_name) ignore NULLS OVER (
-                PARTITION BY user_city
-                ORDER BY created_at
-            ) AS age_window
-          FROM roster`,
-          'SELECT LAG("user_name") IGNORE NULLS OVER (PARTITION BY "user_city" ORDER BY "created_at" ASC) AS "age_window" FROM "roster"'
-        ]
-    },
+    // {
+    //   title: 'Window Fns + NTH_VALUE',
+    //   sql: [
+    //     `SELECT
+    //     NTH_VALUE(user_name, 10) OVER (
+    //           PARTITION BY user_city
+    //           ORDER BY created_at
+    //       ) AS age_window
+    //     FROM roster`,
+    //     'SELECT NTH_VALUE("user_name", 10) RESPECT NULLS OVER (PARTITION BY "user_city" ORDER BY "created_at" ASC) AS "age_window" FROM "roster"'
+    //   ]
+    // },
     {
         title: 'Window Fns + FIRST_VALUE',
         sql: [
-          `SELECT
-            FIRST_VALUE(user_name ignore NULLS) OVER (
-                PARTITION BY user_city
-                ORDER BY created_at, ranking
-            ) AS age_window
-          FROM roster`,
-          'SELECT FIRST_VALUE("user_name" IGNORE NULLS) OVER (PARTITION BY "user_city" ORDER BY "created_at" ASC, "ranking" ASC) AS "age_window" FROM "roster"'
+          `SELECT first_value(product_name)
+            OVER (PARTITION BY category_id ORDER BY product_id ASC) AS AGE_WINDOW FROM sample.products`,
+          'SELECT first_value(PRODUCT_NAME) OVER (PARTITION BY CATEGORY_ID ORDER BY PRODUCT_ID ASC) AS AGE_WINDOW FROM SAMPLE.PRODUCTS'
+        ]
+    },
+    {
+        title: 'Window Fns + FIRST_VALUE (ignore null)',
+        sql: [
+          `SELECT first_value(product_name ignore nulls) 
+            OVER (PARTITION BY category_id ORDER BY product_id ASC) AS AGE_WINDOW FROM sample.products`,
+          'SELECT first_value(PRODUCT_NAME IGNORE NULLS) OVER (PARTITION BY CATEGORY_ID ORDER BY PRODUCT_ID ASC) AS AGE_WINDOW FROM SAMPLE.PRODUCTS'
         ]
     },
     {

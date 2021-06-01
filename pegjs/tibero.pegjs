@@ -41,6 +41,7 @@
     'INNER': true,
     'INSERT': true,
     'INTO': true,
+    'INTERSECT': true,
     'INTERVAL': true,
     'IS': true,
 
@@ -51,6 +52,8 @@
 
     'LIKE': true,
     'LIMIT': true,
+
+    'MINUS': true,
 
     'NOT': true,
     'NULL': true,
@@ -79,8 +82,6 @@
     'TYPE': true,   // reserved (MySQL)
 
     'UNION': true,
-    'MINUS': true,
-    'INTERSECT': true,
 
     'UPDATE': true,
     'USING': true,
@@ -1944,13 +1945,13 @@ window_specification_frameless
   }
 
 window_frame_clause
-  = kw:KW_ROWS __ s:(window_frame_following / window_frame_preceding) {
+  = type:(KW_ROWS/KW_RANGE) __ s:(window_frame_following / window_frame_preceding) {
     // => string
-    return `rows ${s.value}`
+    return `${type} ${s.value}`
   }
-  / KW_ROWS __ KW_BETWEEN __ p:window_frame_preceding __ KW_AND __ f:window_frame_following {
+  / type:(KW_ROWS/KW_RANGE) __ KW_BETWEEN __ p:window_frame_preceding __ KW_AND __ f:window_frame_following {
     // => string
-    return `rows between ${p.value} and ${f.value}`
+    return `${type} between ${p.value} and ${f.value}`
   }
 
 window_frame_following
@@ -2727,20 +2728,23 @@ window_fun_rank
   }
 
 window_fun_laglead
-  = name:KW_LAG_LEAD __ LPAREN __ l:expr_list __ RPAREN __
-  cn:consider_nulls_clause? __ over:over_partition {
+  = name:KW_LAG_LEAD __ LPAREN __ l:expr_list __ RPAREN
+  // __ cn:consider_nulls_clause? // lag lead 에는 이런거 없음
+  __ over:over_partition {
     // => { type: 'window_func'; name: string; args: expr_list; consider_nulls: string; over: over_partition }
     return {
       type: 'window_func',
       name: name,
       args: l,
       over: over,
-      consider_nulls: cn || 'RESPECT NULLS'
+      // consider_nulls: cn || 'RESPECT NULLS'
     };
   }
 
 window_fun_firstlast
-  = name:KW_FIRST_LAST_VALUE __ LPAREN __ l:expr __ cn:consider_nulls_clause? __ RPAREN __ over:over_partition {
+  = name:KW_FIRST_LAST_VALUE __ LPAREN __ l:expr
+  __ cn:consider_nulls_clause?
+  __ RPAREN __ over:over_partition {
     // => window_fun_laglead
     return {
       type: 'window_func',
@@ -2749,7 +2753,7 @@ window_fun_firstlast
         type: 'expr_list', value: [l]
       },
       over: over,
-      consider_nulls: cn || 'RESPECT NULLS'
+      consider_nulls: cn
     };
   }
 
@@ -2765,10 +2769,16 @@ KW_LAG_LEAD
   = 'LAG'i / 'LEAD'i / 'NTH_VALUE'i
 
 consider_nulls_clause
-  = v:('IGNORE'i / 'RESPECT'i) __ 'NULLS'i {
+  = v:'IGNORE'i __ 'NULLS'i {
     // => string
     return v.toUpperCase() + ' NULLS'
   }
+
+// consider_nulls_clause
+//   = v:('IGNORE'i / 'RESPECT'i) __ 'NULLS'i {
+//     // => string
+//     return v.toUpperCase() + ' NULLS'
+//   }
 
 aggr_fun_smma
   = name:KW_SUM_MAX_MIN_AVG __ LPAREN __ e:additive_expr __ RPAREN __ bc:over_partition? {
@@ -3246,6 +3256,7 @@ KW_DOUBLE   = "DOUBLE"i   !ident_start { return 'DOUBLE'; }
 KW_DATE     = "DATE"i     !ident_start { return 'DATE'; }
 KW_DATETIME     = "DATETIME"i     !ident_start { return 'DATETIME'; }
 KW_ROWS     = "ROWS"i     !ident_start { return 'ROWS'; }
+KW_RANGE     = "RANGE"i     !ident_start { return 'RANGE'; }
 KW_TIME     = "TIME"i     !ident_start { return 'TIME'; }
 KW_TIMESTAMP= "TIMESTAMP"i!ident_start { return 'TIMESTAMP'; }
 KW_TRUNCATE = "TRUNCATE"i !ident_start { return 'TRUNCATE'; }

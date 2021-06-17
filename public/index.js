@@ -76,6 +76,15 @@ simpleString=`SELECT first_value(product_name)
 OVER (PARTITION BY category_id ORDER BY product_id ASC) AS AGE_WINDOW FROM sample.products`
 simpleString=`SELECT first_value(product_name)
 OVER (PARTITION BY category_id ORDER BY product_id ASC) AS AGE_WINDOW FROM sample.products`
+simpleString = `with example as (
+	select * from products
+),
+example2 as (
+	select * from warehouses
+)
+
+select * from example`
+
 
 const parser = tiberoParser;
 

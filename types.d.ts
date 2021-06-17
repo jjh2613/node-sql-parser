@@ -76,7 +76,7 @@ export interface Column {
 }
 
 export interface Select {
-  with: With | null;
+  with: With[] | null;
   type: 'select';
   options: any[] | null;
   distinct: 'DISTINCT' | null;

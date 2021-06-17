@@ -6,9 +6,10 @@
 
 export interface With {
   name: string;
-  stmt: any[];
+  stmt: TableColumnAst;
   columns?: any[];
 }
+
 export type WhilteListCheckMode = 'table' | 'column';
 export interface Option {
   database?: string,

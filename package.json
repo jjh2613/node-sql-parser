@@ -1,6 +1,6 @@
 {
   "name": "node-sql-parser-tibero",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "simple node sql parser For Tibero( forked from node-sql-parser)",
   "main": "index.js",
   "types": "types.d.ts",

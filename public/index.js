@@ -5,7 +5,10 @@ import realTiberoParser from "../output/prod/build/tibero"
 import pegjsParser from "../output/prod"
 
 
+const isDebugMode = true
+
 const log_gogo = (tree) => {
+  if(!isDebugMode) return
   console.log("origin tree")
   console.log(tree)
   console.log("set operator tree")
@@ -82,9 +85,16 @@ simpleString = `with example as (
 example2 as (
 	select * from warehouses
 )
-
 select * from example`
 
+simpleString = `
+select * from example where (aa != 'gg' and rownum <= 20) and bb = 20`
+
+simpleString = `
+select * from example where (aa != 'gg' and rownum <= 20) and bb = 20`
+
+simpleString = `
+select * from example group by GROUPING SETS((job, mgr), (dd, gg)), aa`
 
 const parser = tiberoParser;
 

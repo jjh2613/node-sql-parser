@@ -1899,7 +1899,39 @@ where_clause
   = KW_WHERE __ e:(or_and_where_expr / expr) { /* => expr */ return e; }
 
 group_by_clause
-  = KW_GROUP __ KW_BY __ e:expr_list { /* => expr_list['value'] */ return e.value; }
+  = KW_GROUP __ KW_BY __ e:groupby_expr_list { /* => expr_list['value'] */ return e.value; }
+
+groupby_expr_list
+  = head:group_by_expr tail:(__ COMMA __ group_by_expr)* {
+    // => { type: 'expr_list'; value: expr[] }
+      const el = { type: 'expr_list' };
+      el.value = createList(head, tail);
+      return el;
+    }
+group_by_expr
+  =
+  group_by_func_call // func_call 을 개조해야함
+  / logic_operator_expr // support concatenation operator || and &&
+  / unary_expr
+  / or_expr
+  / select_stmt
+
+group_by_func_call
+  = name:group_by_func_name __ LPAREN __ l:expr_list? __ RPAREN {
+      // => { type: 'function'; name: string; args: expr_list; }
+      return {
+        type: 'function',
+        name: name,
+        args: l ? l: { type: 'expr_list', value: [] }
+      };
+    }
+group_by_func_name
+  = KW_CUBE / KW_ROLLUP / grouping_sets
+
+grouping_sets
+  = ( KW_GROUPING ___ KW_SETS ) {
+    return "GROUPING SETS"
+  }
 
 column_ref_list
   = head:column_ref tail:(__ COMMA __ column_ref)* {
@@ -3283,6 +3315,12 @@ KW_SESSION        = "SESSION"i   !ident_start { return 'SESSION'; }
 KW_LOCAL          = "LOCAL"i     !ident_start { return 'LOCAL'; }
 KW_PERSIST        = "PERSIST"i   !ident_start { return 'PERSIST'; }
 KW_PERSIST_ONLY   = "PERSIST_ONLY"i   !ident_start { return 'PERSIST_ONLY'; }
+
+KW_CUBE           = "CUBE"i    !ident_start { return 'CUBE'; }
+KW_ROLLUP         = "ROLLUP"i    !ident_start { return 'ROLLUP'; }
+KW_GROUPING       = "GROUPING"i    !ident_start { return 'GROUPING'; }
+KW_SETS           = "SETS"i    !ident_start { return 'SETS'; }
+
 
 KW_VAR__PRE_AT = '@'
 KW_VAR__PRE_AT_AT = '@@'

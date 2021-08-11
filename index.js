@@ -6,6 +6,8 @@ export {
   util,
 }
 
+console.log("INDEX")
+
 if (global && global.window) {
   global.window.NodeSQLParser = {
     Parser,

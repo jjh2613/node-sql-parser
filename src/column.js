@@ -30,6 +30,22 @@ function columnRefToSQL(expr) {
   return parentheses ? `(${sql})` : sql
 }
 
+function columnRefWithJoinMarkToSQL(expr) {
+  const {
+    arrow, as, collate, column, isDual, table, parentheses, property,
+  } = expr
+  let str = column === '*' ? '*' : identifierToSql(column, isDual)
+  if (table) str = `${identifierToSql(table)}.${str}`
+  const result = [
+    `${str} (+)`,
+    commonOptionConnector('AS', exprToSQL, as),
+    commonOptionConnector(arrow, literalToSQL, property),
+  ]
+  if (collate) result.push(commonTypeValue(collate).join(' '))
+  const sql = result.filter(hasVal).join(' ')
+  return parentheses ? `(${sql})` : sql
+}
+
 function columnDataType(definition) {
   const { dataType, length, suffix, scale } = definition || {}
   let result = dataType
@@ -147,6 +163,7 @@ function columnsToSQL(columns, tables) {
 export {
   columnDefinitionToSQL,
   columnRefToSQL,
+  columnRefWithJoinMarkToSQL,
   columnsToSQL,
   columnDataType,
   columnOrderToSQL,

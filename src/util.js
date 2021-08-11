@@ -126,16 +126,18 @@ function columnIdentifierToSql(ident) {
   const { database } = getParserOpt()
   if (!ident) return
   switch (database && database.toLowerCase()) {
-    case 'postgresql':
-    case 'db2':
-      return `"${ident}"`
     case 'transactsql':
       return `[${ident}]`
     case 'mysql':
     case 'mariadb':
     case 'bigquery':
-    default:
       return `\`${ident}\``
+    case 'tibero':
+      return ident.includes('"') ? `${ident}` : `${ident.toUpperCase()}`
+    case 'postgresql':
+    case 'db2':
+    default:
+      return `"${ident}"`
   }
 }
 
@@ -149,6 +151,8 @@ function identifierToSql(ident, isDual) {
       return `\`${ident}\``
     case 'postgresql':
       return `"${ident}"`
+    case 'tibero':
+      return ident.includes('"') ? `${ident}` : `${ident.toUpperCase()}`
     case 'transactsql':
       return `[${ident}]`
     case 'bigquery':
@@ -276,8 +280,8 @@ function commentToSQL(comment) {
 
 function triggerEventToSQL(events) {
   return events.map(event => {
-    const { keyword: kw, args } = event
-    const result = [toUpper(kw)]
+    const { keyword, args } = event
+    const result = [toUpper(keyword)]
     if (args) {
       const { keyword: kwArgs, columns } = args
       result.push(toUpper(kwArgs), columns.map(columnRefToSQL).join(', '))

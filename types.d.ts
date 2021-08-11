@@ -6,9 +6,10 @@
 
 export interface With {
   name: string;
-  stmt: any[];
+  stmt: TableColumnAst;
   columns?: any[];
 }
+
 export type WhilteListCheckMode = 'table' | 'column';
 export interface Option {
   database?: string,
@@ -44,6 +45,13 @@ export interface ColumnRef {
   table: string | null;
   column: string;
 }
+
+export interface ColumnRefWithJoinMark {
+  type: 'column_ref_with_join_mark';
+  table: string | null;
+  column: string;
+}
+
 export interface SetList {
   column: string;
   value: any;
@@ -69,7 +77,7 @@ export interface Column {
 }
 
 export interface Select {
-  with: With | null;
+  with: With[] | null;
   type: 'select';
   options: any[] | null;
   distinct: 'DISTINCT' | null;

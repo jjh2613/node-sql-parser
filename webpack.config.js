@@ -7,6 +7,8 @@ const nodeExternals = require('webpack-node-externals')
 
 const isCoverage = process.env.NODE_ENV === 'coverage'
 const isProd = process.argv.includes('--prod')
+const isDev = process.argv.includes('--dev')
+
 const isTest = isCoverage || process.argv.includes('--test')
 const subDir = isProd ? 'output/prod' : isTest ? 'output/test' : 'output/dev'
 const outputPath = path.join(__dirname, subDir)
@@ -35,6 +37,7 @@ const moduleCfg = {
         },
         {
             test: /\.pegjs$/,
+            // loader: 'pegjs-loader?dependencies={"BigInt":"big-integer"}&trace=true'
             loader: 'pegjs-loader?dependencies={"BigInt":"big-integer"}'
         }
     ],
@@ -48,7 +51,7 @@ const getCopyFile = (database) => {
     ]
 }
 
-const getDbFile = () => ['bigquery', 'db2', 'hive', 'mariadb', 'mysql', 'postgresql', 'transactsql', 'flinksql'].map(getCopyFile).reduce((prev, curr) => [...prev, ...curr], [])
+const getDbFile = () => ['bigquery', 'db2', 'hive', 'mariadb', 'mysql', 'postgresql', 'transactsql', 'flinksql', 'tibero'].map(getCopyFile).reduce((prev, curr) => [...prev, ...curr], [])
 
 const getSrcFile = () => fs.readdirSync(srcPath).filter(name => name !== 'parser.all.js' || name !== 'parser.single.js').map(name => ({ source: `${outputPath}/${name}`, destination: `${outputPath}/lib/${name}` }))
 
@@ -74,6 +77,7 @@ const getPlugins = (parserName, target, plugins) => [
                 ],
             }),
             new FileManagerPlugin({
+							events:{
                 onEnd: {
                     mkdir: [
                         `${outputPath}/umd`,
@@ -96,6 +100,7 @@ const getPlugins = (parserName, target, plugins) => [
                         `${outputPath}/index.d.ts`
                     ]
                 }
+								}
             })
         ] : [
         ])
@@ -113,7 +118,7 @@ function buildConfig(parserName, target, entry, plugins) {
         devtool: 'source-map',
         externals: target == 'web' ? [] : [
             nodeExternals({
-                whitelist: ['webpack/hot/poll?100'],
+                allowlist: ['webpack/hot/poll?100'],
             }),
         ],
         entry,

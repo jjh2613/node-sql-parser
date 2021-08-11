@@ -13,8 +13,8 @@
             "skipFiles": [
                 "<node_internals>/*.js",
                 "**/loader.js", // webpack hmr reloader
-                "node_modules/core-js/**",
-                "output/**"
+                "node_modules/core-js/**"
+                // "output/**"
             ]
         }, {
             "type": "node",
@@ -33,7 +33,7 @@
             ],
             "skipFiles": [
               "<node_internals>/*.js",
-              "${workspaceFolder}\\output/**",
+              // "${workspaceFolder}\\output/**",
               "${workspaceFolder}\\webpack\\bootstrap"
             ]
           }

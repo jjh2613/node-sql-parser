@@ -50,6 +50,7 @@
 
     // 'KEY': true,
 
+    'LEFT' : true,
     'LIKE': true,
     'LIMIT': true,
 
@@ -1855,7 +1856,6 @@ join_op
   / KW_FULL __ KW_OUTER? __ KW_JOIN { /* => 'FULL JOIN' */ return 'FULL OUTER JOIN'; }
   / KW_CROSS __ KW_JOIN { /* => 'FULL JOIN' */ return 'CROSS JOIN'; }
   / KW_NATURAL __ KW_JOIN { /* => 'FULL JOIN' */ return 'NATURAL JOIN'; }
-  / KW_FULL __ KW_OUTER? __ KW_JOIN { /* => 'FULL JOIN' */ return 'FULL OUTER JOIN'; }
   / (KW_INNER __)? KW_JOIN { /* => 'INNER JOIN' */ return 'INNER JOIN'; }
 
 table_name

@@ -336,6 +336,13 @@ describe("Tibero", () => {
         `SELECT * FROM "partitions" WHERE "location" IS NULL AND "code" LIKE 'XX-%' AND "key" <> 1`,
       ],
     },
+    {
+      title: "alias processing",
+      sql: [
+        `SELECT "col1" alias1, COL2 as alias2, col3 "ALiAS3", col4 as "Alias4" FROM tab`,
+        `SELECT "col1" ALIAS1, COL2 AS ALIAS2, COL3 "ALiAS3", COL4 AS "AAAlias4" FROM TAB`,
+      ],
+    },
   ];
   function neatlyNestTestedSQL(sqlList) {
     sqlList.forEach((sqlInfo) => {

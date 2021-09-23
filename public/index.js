@@ -92,6 +92,8 @@ select * from example group by GROUPING SETS((job, mgr), (dd, gg)), aa`;
 
 simpleString = `SELECT * FROM EMP right JOIN DEPT ON EMP.DEPTNO = DEPT.DEPTNO`;
 
+simpleString = `SELECT "co l1" alias1, COL2 as alias2, col3 "ALi AS3", col4 as "AAAlias4" FROM tab`;
+
 const parser = tiberoParser;
 
 const tracer = new Tracer(simpleString, {

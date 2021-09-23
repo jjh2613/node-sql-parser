@@ -1694,8 +1694,8 @@ column_list_item
     }
 
 alias_clause
-  = KW_AS __ i:alias_ident { /*=>alias_ident*/ return i; }
-  / KW_AS? __ i:ident { /*=>ident*/ return i; }
+  = KW_AS __ i:alias_ident { /*=>alias_ident*/ return { alias: i, as: true}; }
+  / KW_AS? __ i:ident { /*=>ident*/ return { alias: i, as: false}; }
 
 from_clause
   = KW_FROM __ l:table_ref_list { /*=>table_ref_list*/return l; }

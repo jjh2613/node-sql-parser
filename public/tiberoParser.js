@@ -1485,8 +1485,8 @@ function peg$parse(input, options) {
           // => { type: 'expr'; expr: expr; as?: alias_clause; }
             return { type: 'expr', expr: e, as: alias };
           },
-      peg$c265 = function(i) { /*=>alias_ident*/ return i; },
-      peg$c266 = function(i) { /*=>ident*/ return i; },
+      peg$c265 = function(i) { /*=>alias_ident*/ return { alias: i, as: false}; },
+      peg$c266 = function(i) { /*=>ident*/ return { alias: i, as: true}; },
       peg$c267 = function(l) { /*=>table_ref_list*/return l; },
       peg$c268 = function(head, tail) {
           // => table_to_item[]

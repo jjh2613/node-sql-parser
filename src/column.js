@@ -130,9 +130,25 @@ function columnToSQL(column, isDual) {
   if (isDual) expr.isDual = isDual
   let str = exprToSQL(expr)
   if (column.as !== null) {
-    str = `${str} AS `
-    if (column.as.match(/^[a-z_][0-9a-z_]*$/i)) str = `${str}${identifierToSql(column.as)}`
-    else str = `${str}${columnIdentifierToSql(column.as)}`
+    if (column.as.as !== null && column.as.alias !== null) {
+      // only tibero
+
+      if (column.as.as === true) {
+        str = `${str} AS `
+        if (column.as.alias.match(/^[a-z_][0-9a-z_]*$/i)) str = `${str}${identifierToSql(column.as.alias)}`
+        else str = `${str}${columnIdentifierToSql(column.as.alias)}`
+      } else {
+        str = `${str} `
+        if (column.as.alias.match(/^[a-z_][0-9a-z_]*$/i)) str = `${str}${identifierToSql(column.as.alias)}`
+        else str = `${str}${columnIdentifierToSql(column.as.alias)}`
+      }
+    } else {
+      // not tibero
+
+      str = `${str} AS `
+      if (column.as.match(/^[a-z_][0-9a-z_]*$/i)) str = `${str}${identifierToSql(column.as)}`
+      else str = `${str}${columnIdentifierToSql(column.as)}`
+    }
   }
   return str
 }

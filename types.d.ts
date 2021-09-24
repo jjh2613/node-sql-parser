@@ -10,10 +10,10 @@ export interface With {
   columns?: any[];
 }
 
-export type WhilteListCheckMode = 'table' | 'column';
+export type WhilteListCheckMode = "table" | "column";
 export interface Option {
-  database?: string,
-  type?: string,
+  database?: string;
+  type?: string;
 }
 export interface TableColumnAst {
   tableList: string[];
@@ -26,7 +26,7 @@ export interface From {
   as: string | null;
 }
 export interface Dual {
-  type: 'dual';
+  type: "dual";
 }
 export interface LimitValue {
   type: string;
@@ -37,17 +37,17 @@ export interface Limit {
   value: LimitValue[];
 }
 export interface OrderBy {
-  type: 'ASC' | 'DESC';
+  type: "ASC" | "DESC";
   expr: any;
 }
 export interface ColumnRef {
-  type: 'column_ref';
+  type: "column_ref";
   table: string | null;
   column: string;
 }
 
 export interface ColumnRefWithJoinMark {
-  type: 'column_ref_with_join_mark';
+  type: "column_ref_with_join_mark";
   table: string | null;
   column: string;
 }
@@ -58,30 +58,33 @@ export interface SetList {
   table: string | null;
 }
 export interface InsertReplaceValue {
-  type: 'expr_list';
+  type: "expr_list";
   value: any[];
 }
 
 export interface Star {
-  type: 'star';
-  value: '*';
+  type: "star";
+  value: "*";
 }
 export interface AggrFunc {
-  type: 'aggr_func';
+  type: "aggr_func";
   name: string;
   args: ColumnRef | AggrFunc | Star | null;
 }
 export interface Column {
   expr: ColumnRef | AggrFunc;
-  as: string;
+  as: ColumnAlias;
 }
-
+export interface ColumnAlias {
+  alias: string;
+  as: boolean;
+}
 export interface Select {
   with: With[] | null;
-  type: 'select';
+  type: "select";
   options: any[] | null;
-  distinct: 'DISTINCT' | null;
-  columns: any[] | Column[] | '*';
+  distinct: "DISTINCT" | null;
+  columns: any[] | Column[] | "*";
   from: Array<From | Dual | any> | null;
   where: any;
   groupby: ColumnRef[] | null;
@@ -90,34 +93,34 @@ export interface Select {
   limit: Limit | null;
 }
 export interface Insert_Replace {
-  type: 'replace' | 'insert';
+  type: "replace" | "insert";
   db: string | null;
   table: any;
   columns: string[] | null;
   values: InsertReplaceValue[];
 }
 export interface Update {
-  type: 'update';
+  type: "update";
   db: string | null;
   table: Array<From | Dual> | null;
   set: SetList[];
   where: any;
 }
 export interface Delete {
-  type: 'delete';
+  type: "delete";
   table: any;
   from: Array<From | Dual>;
   where: any;
 }
 
 export interface Alter {
-  type: 'alter',
-  table: From,
-  expr: any
+  type: "alter";
+  table: From;
+  expr: any;
 }
 
 export interface Use {
-  type: 'use';
+  type: "use";
   db: string;
 }
 
@@ -132,7 +135,11 @@ export class Parser {
 
   sqlify(ast: AST[] | AST, opt?: Option): string;
 
-  whiteListCheck(sql: string, whiteList: string[], opt?: Option): Error | undefined;
+  whiteListCheck(
+    sql: string,
+    whiteList: string[],
+    opt?: Option
+  ): Error | undefined;
 
   tableList(sql: string, opt?: Option): string[];
 

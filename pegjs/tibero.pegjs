@@ -3266,6 +3266,7 @@ KW_BOOL     = "BOOL"i     !ident_start { return 'BOOL'; }
 KW_BOOLEAN  = "BOOLEAN"i  !ident_start { return 'BOOLEAN'; }
 KW_CHAR     = "CHAR"i     !ident_start { return 'CHAR'; }
 KW_VARCHAR  = "VARCHAR"i  !ident_start { return 'VARCHAR';}
+KW_VARCHAR2  = "VARCHAR2"i  !ident_start { return 'VARCHAR2';}
 KW_NUMERIC  = "NUMERIC"i  !ident_start { return 'NUMERIC'; }
 KW_DECIMAL  = "DECIMAL"i  !ident_start { return 'DECIMAL'; }
 KW_SIGNED   = "SIGNED"i   !ident_start { return 'SIGNED'; }
@@ -3593,11 +3594,12 @@ boolean_type
   = t:(KW_BOOL / KW_BOOLEAN) { /* => data_type */ return { dataType: t }}
 
 character_string_type
-  = t:(KW_CHAR / KW_VARCHAR) __ LPAREN __ l:[0-9]+ __ RPAREN {
+  = t:(KW_CHAR / KW_VARCHAR2 / KW_VARCHAR ) __ LPAREN __ l:[0-9]+ __ RPAREN {
     // => data_type
     return { dataType: t, length: parseInt(l.join(''), 10) };
   }
   / t:KW_CHAR { /* =>  data_type */ return { dataType: t }; }
+  / t:KW_VARCHAR2 { /* =>  data_type */  return { dataType: t }; }
   / t:KW_VARCHAR { /* =>  data_type */  return { dataType: t }; }
 
 numeric_type_suffix

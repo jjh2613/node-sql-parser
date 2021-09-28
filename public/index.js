@@ -10,10 +10,16 @@ const log_gogo = (tree) => {
   if (!isDebugMode) return;
   console.log("origin tree");
   console.log(tree);
-  console.log("set operator tree");
-  console.log(tree.children[0].children[1].children[0]);
-  // console.log("select tree")
-  // console.log(tree.children[0].children[1].children[0].children[0].children[0])
+  console.log("column_clause operator tree");
+  const column_clause = tree.children[0].children[1].children[0].children[0].children[0].children[6]
+  console.log(column_clause);
+  console.log("primary operator tree");
+  const primary = column_clause.children[0].children[3].children[0].children[0].children[0].children[0].children[0].children[0].children[0];
+  console.log(primary);
+
+  console.log("cast_expr operator tree");
+  const cast_expr = primary.children[0];
+  console.log(cast_expr);
 };
 
 let simpleString;
@@ -93,6 +99,9 @@ select * from example group by GROUPING SETS((job, mgr), (dd, gg)), aa`;
 simpleString = `SELECT * FROM EMP right JOIN DEPT ON EMP.DEPTNO = DEPT.DEPTNO`;
 
 simpleString = `SELECT "co l1" alias1, COL2 as alias2, col3 "ALi AS3", col4 as "AAAlias4" FROM tab`;
+
+simpleString = `SELECT cast("col1" as varchar2(100)) alias1, cast(col2 as varchar2(100)) as alias2, col3 "ALi AS3", col4 as "AAAlias4" FROM tab`;
+
 
 const parser = tiberoParser;
 

@@ -343,6 +343,13 @@ describe("Tibero", () => {
         `SELECT "col1" ALIAS1, COL2 AS ALIAS2, COL3 "ALiAS3", COL4 AS "AAAlias4" FROM TAB`,
       ],
     },
+    {
+      title: "cast expression processing",
+      sql: [
+        `SELECT cast("col1" as varchar2(100)) alias1, cast(col2 as varchar2(100)) as alias2, col3 "ALi AS3", col4 as "AAAlias4" FROM tab`,
+        `SELECT CAST("col1" AS VARCHAR2(100)) ALIAS1, CAST(COL2 AS VARCHAR2(100)) AS ALIAS2, COL3 "ALi AS3", COL4 AS "AAAlias4" FROM TAB`,
+      ],
+    },
   ];
   function neatlyNestTestedSQL(sqlList) {
     sqlList.forEach((sqlInfo) => {

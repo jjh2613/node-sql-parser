@@ -357,6 +357,13 @@ describe("Tibero", () => {
         `SELECT SUBSTRING(COL1 FROM 1 FOR 4) AS SS, substring("col2", 1, 4) AS SS2 FROM TAB1`,
       ],
     },
+    {
+      title: "substring function expression processing",
+      sql: [
+        `SELECT EXTRACT(YEAR FROM 'aa') FROM HYPERDATA.DATAJOB_HISTORY`,
+        `SELECT EXTRACT(YEAR FROM 'aa') FROM HYPERDATA.DATAJOB_HISTORY`,
+      ],
+    },
   ];
   function neatlyNestTestedSQL(sqlList) {
     sqlList.forEach((sqlInfo) => {

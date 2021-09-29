@@ -104,6 +104,7 @@ simpleString = `SELECT cast("col1" as varchar2(100)) alias1, cast(col2 as varcha
 
 simpleString = `SELECT substring(col1 from 1 for 4) as ss, substring("col2", 1, 4) as ss2  from tab1`;
 
+simpleString = `select extract(YEAR from 'aa') from hyperdata.datajob_history`
 
 const parser = tiberoParser;
 

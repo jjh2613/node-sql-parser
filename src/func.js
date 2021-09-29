@@ -36,8 +36,15 @@ function funcToSQL(expr) {
   return [parentheses ? `(${str})` : str, overStr].filter(hasVal).join(' ')
 }
 
+function substringFromForFuncToSQL(expr) {
+  const { args, name } = expr
+  const processedArgs = exprToSQL(args)
+  return `${name}(${processedArgs[0]} FROM ${processedArgs[1]} FOR ${processedArgs[2]})`
+}
+
 export {
   castToSQL,
   extractFunToSQL,
   funcToSQL,
+  substringFromForFuncToSQL,
 }

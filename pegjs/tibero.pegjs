@@ -2259,6 +2259,14 @@ value_item
       return l;
     }
 
+substring_expr_list
+  = head:expr fromTail:(__ KW_FROM __ expr) forTail: (__ KW_FOR __ expr) {
+    // => { type: 'expr_list'; value: expr[] }
+      const el = { type: 'expr_list' };
+      el.value = createList(head, [fromTail, forTail]);
+      return el;
+    }
+
 expr_list
   = head:expr tail:(__ COMMA __ expr)* {
     // => { type: 'expr_list'; value: expr[] }
@@ -2862,7 +2870,16 @@ star_expr
   = "*" { /* => { type: 'star'; value: '*' } */ return { type: 'star', value: '*' }; }
 
 func_call
-  = name:proc_func_name __ LPAREN __ l:expr_list? __ RPAREN {
+  = name:substring_func_name __ LPAREN __ l:substring_expr_list? __ RPAREN {
+      // => { type: 'substring_fromfor_function'; name: string; fromfor: true; args: substring_expr_list; }
+      return {
+        type: 'substring_fromfor_function',
+        name: name,
+        fromfor: true,
+        args: l ? l: { type: 'expr_list', value: [] }
+      };
+    }
+  / name:proc_func_name __ LPAREN __ l:expr_list? __ RPAREN {
       // => { type: 'function'; name: string; args: expr_list; }
       return {
         type: 'function',
@@ -3322,6 +3339,8 @@ KW_ROLLUP         = "ROLLUP"i    !ident_start { return 'ROLLUP'; }
 KW_GROUPING       = "GROUPING"i    !ident_start { return 'GROUPING'; }
 KW_SETS           = "SETS"i    !ident_start { return 'SETS'; }
 
+KW_SUBSTRING      = "SUBSTRING"i    !ident_start { return 'SUBSTRING'; }
+KW_FOR           = "FOR"i    !ident_start { return 'FOR'; }
 
 KW_VAR__PRE_AT = '@'
 KW_VAR__PRE_AT_AT = '@@'
@@ -3500,6 +3519,12 @@ proc_primary
     // => proc_additive_expr & { parentheses: true; }
       e.parentheses = true;
       return e;
+    }
+
+substring_func_name
+  = dt:KW_SUBSTRING {
+    // => string
+      return dt;
     }
 
 proc_func_name

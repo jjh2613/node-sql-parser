@@ -350,6 +350,13 @@ describe("Tibero", () => {
         `SELECT CAST("col1" AS VARCHAR2(100)) ALIAS1, CAST(COL2 AS VARCHAR2(100)) AS ALIAS2, COL3 "ALi AS3", COL4 AS "AAAlias4" FROM TAB`,
       ],
     },
+    {
+      title: "substring function expression processing",
+      sql: [
+        `SELECT substring(col1 from 1 for 4) as ss, substring("col2", 1, 4) as ss2  from tab1`,
+        `SELECT SUBSTRING(COL1 FROM 1 FOR 4) AS SS, substring("col2", 1, 4) AS SS2 FROM TAB1`,
+      ],
+    },
   ];
   function neatlyNestTestedSQL(sqlList) {
     sqlList.forEach((sqlInfo) => {

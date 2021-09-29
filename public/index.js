@@ -102,6 +102,8 @@ simpleString = `SELECT "co l1" alias1, COL2 as alias2, col3 "ALi AS3", col4 as "
 
 simpleString = `SELECT cast("col1" as varchar2(100)) alias1, cast(col2 as varchar2(100)) as alias2, col3 "ALi AS3", col4 as "AAAlias4" FROM tab`;
 
+simpleString = `SELECT substring(col1 from 1 for 4) as ss, substring("col2", 1, 4) as ss2  from tab1`;
+
 
 const parser = tiberoParser;
 

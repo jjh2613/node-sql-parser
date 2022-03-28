@@ -2707,14 +2707,14 @@ ident_name
       return start + parts.join('');
     }
 
-ident_start = [A-Za-zㄱ-ㅎ가-힣陳_]
+ident_start = [A-Za-zㄱ-ㅎ가-힣陳_~!@#%*^]
 
 ident_part  = [A-Za-z0-9ㄱ-ㅎ가-힣陳_\-]
 
 join_mark_part = __ LPAREN __ PLUS __ RPAREN
 
 // to support column name like `cf1:name` in hbase
-column_part  = [A-Za-z0-9ㄱ-ㅎ가-힣陳_]
+column_part  = [A-Za-z0-9ㄱ-ㅎ가-힣陳_~!@#%*^]
 
 param
   = l:(':' ident_name) {

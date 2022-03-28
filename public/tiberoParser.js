@@ -1485,8 +1485,8 @@ function peg$parse(input, options) {
           // => { type: 'expr'; expr: expr; as?: alias_clause; }
             return { type: 'expr', expr: e, as: alias };
           },
-      peg$c265 = function(i) { /*=>alias_ident*/ return { alias: i, as: false}; },
-      peg$c266 = function(i) { /*=>ident*/ return { alias: i, as: true}; },
+      peg$c265 = function(i) { /*=>alias_ident*/ return { alias: i, as: true}; },
+      peg$c266 = function(i) { /*=>ident*/ return { alias: i, as: false}; },
       peg$c267 = function(l) { /*=>table_ref_list*/return l; },
       peg$c268 = function(head, tail) {
           // => table_to_item[]
@@ -2250,12 +2250,12 @@ function peg$parse(input, options) {
             // => string
             return start + parts.join('');
           },
-      peg$c454 = /^[A-Za-z\u3131-\u314E\uAC00-\uD7A3\u9673_]/,
-      peg$c455 = peg$classExpectation([["A", "Z"], ["a", "z"], ["\u3131", "\u314E"], ["\uAC00", "\uD7A3"], "\u9673", "_"], false, false),
+      peg$c454 = /^[A-Za-z\u3131-\u314E\uAC00-\uD7A3\u9673_~!@#%*\^]/,
+      peg$c455 = peg$classExpectation([["A", "Z"], ["a", "z"], ["\u3131", "\u314E"], ["\uAC00", "\uD7A3"], "\u9673", "_", "~", "!", "@", "#", "%", "*", "^"], false, false),
       peg$c456 = /^[A-Za-z0-9\u3131-\u314E\uAC00-\uD7A3\u9673_\-]/,
       peg$c457 = peg$classExpectation([["A", "Z"], ["a", "z"], ["0", "9"], ["\u3131", "\u314E"], ["\uAC00", "\uD7A3"], "\u9673", "_", "-"], false, false),
-      peg$c458 = /^[A-Za-z0-9\u3131-\u314E\uAC00-\uD7A3\u9673_]/,
-      peg$c459 = peg$classExpectation([["A", "Z"], ["a", "z"], ["0", "9"], ["\u3131", "\u314E"], ["\uAC00", "\uD7A3"], "\u9673", "_"], false, false),
+      peg$c458 = /^[A-Za-z0-9\u3131-\u314E\uAC00-\uD7A3\u9673_~!@#%*\^]/,
+      peg$c459 = peg$classExpectation([["A", "Z"], ["a", "z"], ["0", "9"], ["\u3131", "\u314E"], ["\uAC00", "\uD7A3"], "\u9673", "_", "~", "!", "@", "#", "%", "*", "^"], false, false),
       peg$c460 = ":",
       peg$c461 = peg$literalExpectation(":", false),
       peg$c462 = function(l) {

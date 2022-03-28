@@ -74,7 +74,7 @@ describe("Tibero", () => {
       ],
     },
     {
-      title: "Innet Join",
+      title: "Inner Join",
       sql: [
         `select worker.empno, worker.ename, manager.ename from emp worker inner join emp manager on(worker.mgr = manager.empno)`,
         "SELECT WORKER.EMPNO, WORKER.ENAME, MANAGER.ENAME FROM EMP AS WORKER INNER JOIN EMP AS MANAGER ON (WORKER.MGR = MANAGER.EMPNO)",
@@ -108,6 +108,13 @@ describe("Tibero", () => {
         FROM "Roster" INNER JOIN PlayerStats
         USING (LastName);`,
         'SELECT FIRSTNAME FROM "Roster" INNER JOIN PLAYERSTATS USING (LASTNAME)',
+      ],
+    },
+    {
+      title: "Inner Join and table alias",
+      sql: [
+        `select worker.empno, worker.ename, manager.ename from emp ! inner join emp manager on(!.mgr = manager.empno)`,
+        "SELECT WORKER.EMPNO, WORKER.ENAME, MANAGER.ENAME FROM EMP AS ! INNER JOIN EMP AS MANAGER ON (!.MGR = MANAGER.EMPNO)",
       ],
     },
     {

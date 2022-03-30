@@ -96,7 +96,6 @@ simpleString = `SELECT "co l1" "!alias1", COL2 as alias2, col3 "ALi AS3", col4 a
 
 simpleString = `select worker.empno, worker.ename, manager.ename from emp ! inner join emp manager on(!.mgr = manager.empno)`;
 
-// simpleString = `select worker.empno, !worker.ename, manager.ename from emp worker inner join emp manager on(worker.mgr = manager.empno)`;
 const parser = tiberoParser;
 
 const tracer = new Tracer(simpleString, {

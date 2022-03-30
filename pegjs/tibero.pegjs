@@ -2259,6 +2259,14 @@ value_item
       return l;
     }
 
+substring_expr_list
+  = head:expr fromTail:(__ KW_FROM __ expr) forTail: (__ KW_FOR __ expr) {
+    // => { type: 'expr_list'; value: expr[] }
+      const el = { type: 'expr_list' };
+      el.value = createList(head, [fromTail, forTail]);
+      return el;
+    }
+
 expr_list
   = head:expr tail:(__ COMMA __ expr)* {
     // => { type: 'expr_list'; value: expr[] }
@@ -2862,7 +2870,16 @@ star_expr
   = "*" { /* => { type: 'star'; value: '*' } */ return { type: 'star', value: '*' }; }
 
 func_call
-  = name:proc_func_name __ LPAREN __ l:expr_list? __ RPAREN {
+  = name:substring_func_name __ LPAREN __ l:substring_expr_list? __ RPAREN {
+      // => { type: 'substring_fromfor_function'; name: string; fromfor: true; args: substring_expr_list; }
+      return {
+        type: 'substring_fromfor_function',
+        name: name,
+        fromfor: true,
+        args: l ? l: { type: 'expr_list', value: [] }
+      };
+    }
+  / name:proc_func_name __ LPAREN __ l:expr_list? __ RPAREN {
       // => { type: 'function'; name: string; args: expr_list; }
       return {
         type: 'function',
@@ -2882,7 +2899,7 @@ func_call
   / extract_func
 
 extract_filed
-  = f:'CENTURY'i / 'DAY'i / 'DECADE'i / 'DOW'i / 'DOY'i / 'EPOCH'i / 'HOUR'i / 'ISODOW'i / 'ISOYEAR'i / 'MICROSECONDS'i / 'MILLENNIUM'i / 'MILLISECONDS'i / 'MINUTE'i / 'MONTH'i / 'QUARTER'i / 'SECOND'i / 'TIMEZONE'i / 'TIMEZONE_HOUR'i / 'TIMEZONE_MINUTE'i / 'WEEK'i / 'YEAR'i {
+  = f:'YEAR'i / 'CENTURY'i / 'DAY'i / 'DECADE'i / 'DOW'i / 'DOY'i / 'EPOCH'i / 'HOUR'i / 'ISODOW'i / 'ISOYEAR'i / 'MICROSECONDS'i / 'MILLENNIUM'i / 'MILLISECONDS'i / 'MINUTE'i / 'MONTH'i / 'QUARTER'i / 'SECOND'i / 'TIMEZONE'i / 'TIMEZONE_HOUR'i / 'TIMEZONE_MINUTE'i / 'WEEK'i {
     // => 'string'
     return f
   }
@@ -3266,6 +3283,7 @@ KW_BOOL     = "BOOL"i     !ident_start { return 'BOOL'; }
 KW_BOOLEAN  = "BOOLEAN"i  !ident_start { return 'BOOLEAN'; }
 KW_CHAR     = "CHAR"i     !ident_start { return 'CHAR'; }
 KW_VARCHAR  = "VARCHAR"i  !ident_start { return 'VARCHAR';}
+KW_VARCHAR2  = "VARCHAR2"i  !ident_start { return 'VARCHAR2';}
 KW_NUMERIC  = "NUMERIC"i  !ident_start { return 'NUMERIC'; }
 KW_DECIMAL  = "DECIMAL"i  !ident_start { return 'DECIMAL'; }
 KW_SIGNED   = "SIGNED"i   !ident_start { return 'SIGNED'; }
@@ -3321,6 +3339,8 @@ KW_ROLLUP         = "ROLLUP"i    !ident_start { return 'ROLLUP'; }
 KW_GROUPING       = "GROUPING"i    !ident_start { return 'GROUPING'; }
 KW_SETS           = "SETS"i    !ident_start { return 'SETS'; }
 
+KW_SUBSTRING      = "SUBSTRING"i    !ident_start { return 'SUBSTRING'; }
+KW_FOR           = "FOR"i    !ident_start { return 'FOR'; }
 
 KW_VAR__PRE_AT = '@'
 KW_VAR__PRE_AT_AT = '@@'
@@ -3501,6 +3521,12 @@ proc_primary
       return e;
     }
 
+substring_func_name
+  = dt:KW_SUBSTRING {
+    // => string
+      return dt;
+    }
+
 proc_func_name
   = dt:ident tail:(__ DOT __ ident)? {
     // => string
@@ -3593,11 +3619,12 @@ boolean_type
   = t:(KW_BOOL / KW_BOOLEAN) { /* => data_type */ return { dataType: t }}
 
 character_string_type
-  = t:(KW_CHAR / KW_VARCHAR) __ LPAREN __ l:[0-9]+ __ RPAREN {
+  = t:(KW_CHAR / KW_VARCHAR2 / KW_VARCHAR ) __ LPAREN __ l:[0-9]+ __ RPAREN {
     // => data_type
     return { dataType: t, length: parseInt(l.join(''), 10) };
   }
   / t:KW_CHAR { /* =>  data_type */ return { dataType: t }; }
+  / t:KW_VARCHAR2 { /* =>  data_type */  return { dataType: t }; }
   / t:KW_VARCHAR { /* =>  data_type */  return { dataType: t }; }
 
 numeric_type_suffix

@@ -10,10 +10,16 @@ const log_gogo = (tree) => {
   if (!isDebugMode) return;
   console.log("origin tree");
   console.log(tree);
-  console.log("set operator tree");
-  console.log(tree.children[0].children[1].children[0]);
-  // console.log("select tree")
-  // console.log(tree.children[0].children[1].children[0].children[0].children[0])
+  console.log("column_clause operator tree");
+  const column_clause = tree.children[0].children[1].children[0].children[0].children[0].children[6]
+  console.log(column_clause);
+  console.log("primary operator tree");
+  const primary = column_clause.children[0].children[3].children[0].children[0].children[0].children[0].children[0].children[0].children[0];
+  console.log(primary);
+
+  console.log("cast_expr operator tree");
+  const cast_expr = primary.children[0];
+  console.log(cast_expr);
 };
 
 let simpleString;
@@ -95,6 +101,12 @@ simpleString = `SELECT * FROM EMP right JOIN DEPT ON EMP.DEPTNO = DEPT.DEPTNO`;
 simpleString = `SELECT "co l1" "!alias1", COL2 as alias2, col3 "ALi AS3", col4 as "AAAlias4" FROM tab`;
 
 simpleString = `select worker.empno, worker.ename, manager.ename from emp ! inner join emp manager on(!.mgr = manager.empno)`;
+
+simpleString = `SELECT cast("col1" as varchar2(100)) alias1, cast(col2 as varchar2(100)) as alias2, col3 "ALi AS3", col4 as "AAAlias4" FROM tab`;
+
+simpleString = `SELECT substring(col1 from 1 for 4) as ss, substring("col2", 1, 4) as ss2  from tab1`;
+
+simpleString = `select extract(YEAR from 'aa') from hyperdata.datajob_history`
 
 const parser = tiberoParser;
 

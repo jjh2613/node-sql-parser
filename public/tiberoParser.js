@@ -2256,15 +2256,15 @@ function peg$parse(input, options) {
             // => string
             return start + parts.join('');
           },
-      peg$c454 = /^[A-Za-z\u3131-\u314E\uAC00-\uD7A3\u9673_~!@#%*\^]/,
-      peg$c455 = peg$classExpectation([["A", "Z"], ["a", "z"], ["\u3131", "\u314E"], ["\uAC00", "\uD7A3"], "\u9673", "_", "~", "!", "@", "#", "%", "*", "^"], false, false),
-      peg$c456 = /^[A-Za-z0-9\u3131-\u314E\uAC00-\uD7A3\u9673_\-]/,
-      peg$c457 = peg$classExpectation([["A", "Z"], ["a", "z"], ["0", "9"], ["\u3131", "\u314E"], ["\uAC00", "\uD7A3"], "\u9673", "_", "-"], false, false),
-      peg$c458 = /^[A-Za-z0-9\u3131-\u314E\uAC00-\uD7A3\u9673_~!@#%*\^]/,
-      peg$c459 = peg$classExpectation([["A", "Z"], ["a", "z"], ["0", "9"], ["\u3131", "\u314E"], ["\uAC00", "\uD7A3"], "\u9673", "_", "~", "!", "@", "#", "%", "*", "^"], false, false),
-      peg$c460 = ":",
-      peg$c461 = peg$literalExpectation(":", false),
-      peg$c462 = function(l) {
+      peg$c455 = /^[A-Za-z\u3131-\u314E\uAC00-\uD7A3\u9673_]/,
+      peg$c456 = peg$classExpectation([["A", "Z"], ["a", "z"], ["\u3131", "\u314E"], ["\uAC00", "\uD7A3"], "\u9673", "_"], false, false),
+      peg$c457 = /^[A-Za-z0-9\u3131-\u314E\uAC00-\uD7A3\u9673_\-]/,
+      peg$c458 = peg$classExpectation([["A", "Z"], ["a", "z"], ["0", "9"], ["\u3131", "\u314E"], ["\uAC00", "\uD7A3"], "\u9673", "_", "-"], false, false),
+      peg$c459 = /^[A-Za-z0-9\u3131-\u314E\uAC00-\uD7A3\u9673_]/,
+      peg$c460 = peg$classExpectation([["A", "Z"], ["a", "z"], ["0", "9"], ["\u3131", "\u314E"], ["\uAC00", "\uD7A3"], "\u9673", "_"], false, false),
+      peg$c461 = ":",
+      peg$c462 = peg$literalExpectation(":", false),
+      peg$c463 = function(l) {
           // => { type: 'param'; value: ident_name }
             return { type: 'param', value: l[1] };
           },

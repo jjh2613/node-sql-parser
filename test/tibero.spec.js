@@ -74,7 +74,7 @@ describe("Tibero", () => {
       ],
     },
     {
-      title: "Inner Join",
+      title: "Innet Join",
       sql: [
         `select worker.empno, worker.ename, manager.ename from emp worker inner join emp manager on(worker.mgr = manager.empno)`,
         "SELECT WORKER.EMPNO, WORKER.ENAME, MANAGER.ENAME FROM EMP AS WORKER INNER JOIN EMP AS MANAGER ON (WORKER.MGR = MANAGER.EMPNO)",
@@ -108,20 +108,6 @@ describe("Tibero", () => {
         FROM "Roster" INNER JOIN PlayerStats
         USING (LastName);`,
         'SELECT FIRSTNAME FROM "Roster" INNER JOIN PLAYERSTATS USING (LASTNAME)',
-      ],
-    },
-    {
-      title: "Inner Join and table alias",
-      sql: [
-        `select worker.empno, worker.ename, manager.ename from emp ! inner join emp manager on(!.mgr = manager.empno)`,
-        "SELECT WORKER.EMPNO, WORKER.ENAME, MANAGER.ENAME FROM EMP AS ! INNER JOIN EMP AS MANAGER ON (!.MGR = MANAGER.EMPNO)",
-      ],
-    },
-    {
-      title: "Inner Join and table alias(special)",
-      sql: [
-        `select worker.empno, worker.ename, manager.ename from emp @ inner join emp manager on(@.mgr = manager.empno)`,
-        "SELECT WORKER.EMPNO, WORKER.ENAME, MANAGER.ENAME FROM EMP AS @ INNER JOIN EMP AS MANAGER ON (@.MGR = MANAGER.EMPNO)",
       ],
     },
     {
@@ -313,14 +299,14 @@ describe("Tibero", () => {
     {
       title: "array column",
       sql: [
-        `SELECT ARRAY["col1","col2",1,'str_literal'] FROM "tableb"`,
+        "SELECT ARRAY[col1, col2, 1, 'str_literal'] from tableb",
         `SELECT ARRAY["col1","col2",1,'str_literal'] FROM "tableb"`,
       ],
     },
     {
       title: "row function column",
       sql: [
-        `SELECT ROW("col1", "col2", 'literal', 1) FROM "tableb"`,
+        "SELECT ROW(col1, col2, 'literal', 1) from tableb",
         `SELECT ROW("col1", "col2", 'literal', 1) FROM "tableb"`,
       ],
     },
@@ -340,21 +326,21 @@ describe("Tibero", () => {
       title: "case when in pg",
       sql: [
         `SELECT SUM(CASE WHEN status = 'ACTIVE' THEN 1 ELSE 0 END) FROM tablename`,
-        `SELECT SUM(CASE WHEN STATUS = 'ACTIVE' THEN 1 ELSE 0 END) FROM TABLENAME`,
+        `SELECT SUM(CASE WHEN "status" = 'ACTIVE' THEN 1 ELSE 0 END) FROM "tablename"`,
       ],
     },
     {
       title: "key keyword in pg",
       sql: [
         `SELECT * FROM partitions WHERE location IS NULL AND code like 'XX-%' AND key <> 1;`,
-        `SELECT * FROM PARTITIONS WHERE LOCATION IS NULL AND CODE LIKE 'XX-%' AND KEY <> 1`,
+        `SELECT * FROM "partitions" WHERE "location" IS NULL AND "code" LIKE 'XX-%' AND "key" <> 1`,
       ],
     },
     {
       title: "alias processing",
       sql: [
         `SELECT "col1" alias1, COL2 as alias2, col3 "ALiAS3", col4 as "Alias4" FROM tab`,
-        `SELECT "col1" ALIAS1, COL2 AS ALIAS2, COL3 "ALiAS3", COL4 AS "Alias4" FROM TAB`,
+        `SELECT "col1" ALIAS1, COL2 AS ALIAS2, COL3 "ALiAS3", COL4 AS "AAAlias4" FROM TAB`,
       ],
     },
     {
@@ -394,21 +380,21 @@ describe("Tibero", () => {
       {
         title: "create sequence",
         sql: [
-          `CREATE SEQUENCE "public"."table_id_seq"`,
+          `CREATE SEQUENCE public.table_id_seq`,
           'CREATE SEQUENCE "public"."table_id_seq"',
         ],
       },
       {
         title: "create sequence increment by",
         sql: [
-          `CREATE TEMPORARY SEQUENCE if not exists "public"."table_id_seq" increment by 10`,
+          `CREATE TEMPORARY SEQUENCE if not exists public.table_id_seq increment by 10`,
           'CREATE TEMPORARY SEQUENCE IF NOT EXISTS "public"."table_id_seq" INCREMENT BY 10',
         ],
       },
       {
         title: "create sequence increment by minvalue and maxvalue",
         sql: [
-          `CREATE TEMPORARY SEQUENCE if not exists "public"."table_id_seq" increment by 10 minvalue 20 maxvalue 30`,
+          `CREATE TEMPORARY SEQUENCE if not exists public.table_id_seq increment by 10 minvalue 20 maxvalue 30`,
           'CREATE TEMPORARY SEQUENCE IF NOT EXISTS "public"."table_id_seq" INCREMENT BY 10 MINVALUE 20 MAXVALUE 30',
         ],
       },
@@ -416,20 +402,20 @@ describe("Tibero", () => {
         title: "create sequence increment by start with cache",
         sql: [
           `CREATE TEMPORARY SEQUENCE if not exists public.table_id_seq increment by 10 no minvalue no maxvalue start with 1 cache 3`,
-          "CREATE TEMPORARY SEQUENCE IF NOT EXISTS PUBLIC.TABLE_ID_SEQ INCREMENT BY 10 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 3",
+          'CREATE TEMPORARY SEQUENCE IF NOT EXISTS "public"."table_id_seq" INCREMENT BY 10 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 3',
         ],
       },
       {
         title: "create sequence increment by start with cache, cycle and owned",
         sql: [
-          `CREATE TEMPORARY SEQUENCE if not exists "public"."table_id_seq" increment by 10 no minvalue no maxvalue start with 1 cache 3 no cycle owned by "tn"."cn"`,
+          `CREATE TEMPORARY SEQUENCE if not exists public.table_id_seq increment by 10 no minvalue no maxvalue start with 1 cache 3 no cycle owned by tn.cn`,
           'CREATE TEMPORARY SEQUENCE IF NOT EXISTS "public"."table_id_seq" INCREMENT BY 10 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 3 NO CYCLE OWNED BY "tn"."cn"',
         ],
       },
       {
         title: "create sequence increment by start with cache, cycle and owned",
         sql: [
-          `CREATE TEMPORARY SEQUENCE if not exists "public"."table_id_seq" increment 10 no minvalue no maxvalue start with 1 cache 3 cycle owned by none`,
+          `CREATE TEMPORARY SEQUENCE if not exists public.table_id_seq increment 10 no minvalue no maxvalue start with 1 cache 3 cycle owned by none`,
           'CREATE TEMPORARY SEQUENCE IF NOT EXISTS "public"."table_id_seq" INCREMENT 10 NO MINVALUE NO MAXVALUE START WITH 1 CACHE 3 CYCLE OWNED BY NONE',
         ],
       },

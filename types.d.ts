@@ -44,6 +44,7 @@ export interface ColumnRef {
   type: "column_ref";
   table: string | null;
   column: string;
+  columnType?: string;
 }
 
 export interface ColumnRefWithJoinMark {

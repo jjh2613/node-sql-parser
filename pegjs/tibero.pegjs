@@ -32,6 +32,7 @@
     'FALSE': true,
     'FROM': true,
     'FULL': true,
+    'FOR': true,
 
     'GROUP': true,
 
@@ -64,6 +65,8 @@
     'OR': true,
     'ORDER': true,
     'OUTER': true,
+
+    'PIVOT': true,
 
     'RECURSIVE': true,
     'RENAME': true,
@@ -1697,8 +1700,27 @@ alias_clause
   = KW_AS __ i:alias_ident { /*=>alias_ident*/ return { alias: i, as: true}; }
   / KW_AS? __ i:ident { /*=>ident*/ return { alias: i, as: false}; }
 
+alias_clause_pivot
+  = KW_AS __ i:alias_ident { /*=>alias_ident*/ return i; }
+  / KW_AS? __ i:ident { /*=>ident*/ return i; }
+
 from_clause
-  = KW_FROM __ l:table_ref_list { /*=>table_ref_list*/return l; }
+  = KW_FROM __ l:table_ref_list __ op:pivot_operator? {
+    if (l[0]) l[0].operator = op
+    return l
+  }
+
+pivot_operator
+  = KW_PIVOT __ LPAREN __ a:aggr_func_list __ 'FOR'i __ c:column_ref __ i:in_op_right __ RPAREN __ as:alias_clause? {
+    i.operator = '='
+    return {
+      'type': 'pivot',
+      'expr': a,
+      column: c,
+      in_expr: i,
+      as,
+    }
+  }
 
 table_to_list
   = head:table_to_item tail:(__ COMMA __ table_to_item)* {
@@ -2752,6 +2774,13 @@ aggr_func
   / aggr_fun_smma
   / aggr_array_agg
 
+aggr_func_list
+  = head:aggr_func __ as:alias_clause? tail:(__ COMMA __ aggr_func __ alias_clause?)* {
+      const el = { type: 'expr_list' };
+      el.value = createList(head, tail);
+      return el;
+  }
+
 window_func
   = window_fun_rank
   / window_fun_laglead
@@ -3331,6 +3360,7 @@ KW_SYSTEM_USER      = "SYSTEM_USER"i !ident_start { return 'SYSTEM_USER'; }
 KW_GLOBAL         = "GLOBAL"i    !ident_start { return 'GLOBAL'; }
 KW_SESSION        = "SESSION"i   !ident_start { return 'SESSION'; }
 KW_LOCAL          = "LOCAL"i     !ident_start { return 'LOCAL'; }
+KW_PIVOT          = "PIVOT"i   !ident_start { return 'PIVOT'; }
 KW_PERSIST        = "PERSIST"i   !ident_start { return 'PERSIST'; }
 KW_PERSIST_ONLY   = "PERSIST_ONLY"i   !ident_start { return 'PERSIST_ONLY'; }
 

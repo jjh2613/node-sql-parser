@@ -45,6 +45,7 @@ function varToSQL(expr) {
 exprToSQLConvertFn.var = varToSQL
 
 function exprToSQL(exprOrigin) {
+  if (!exprOrigin) return
   const expr = exprOrigin
   if (exprOrigin.ast) {
     const { ast } = expr

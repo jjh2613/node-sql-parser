@@ -378,6 +378,20 @@ describe("Tibero", () => {
         `SELECT EXTRACT(YEAR FROM 'aa') FROM HYPERDATA.DATAJOB_HISTORY`,
       ],
     },
+    {
+      title: 'from pivot operator',
+      sql:[
+        "SELECT sales, quarter FROM Produce PIVOT(sum(sales) FOR quarter IN ('Q1', 'Q2', 'Q3', 'Q4'))",
+        "SELECT SALES, QUARTER FROM PRODUCE PIVOT(SUM(SALES) FOR QUARTER IN ('Q1', 'Q2', 'Q3', 'Q4'))"
+      ]
+    },
+    {
+      title: 'from pivot operator with as',
+      sql:[
+        "SELECT sales, quarter FROM Produce PIVOT(sum(sales) FOR quarter IN ('Q1', 'Q2', 'Q3', 'Q4')) as abc",
+        "SELECT SALES, QUARTER FROM PRODUCE PIVOT(SUM(SALES) FOR QUARTER IN ('Q1', 'Q2', 'Q3', 'Q4')) AS ABC"
+      ]
+    }
   ];
   function neatlyNestTestedSQL(sqlList) {
     sqlList.forEach((sqlInfo) => {

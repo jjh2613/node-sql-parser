@@ -2,6 +2,7 @@ coverage/
 .DS_Store
 test/
 *.log
+**/*.map
 .gitignore
 .vscode
 .npmignore

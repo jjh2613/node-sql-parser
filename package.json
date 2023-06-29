@@ -1,6 +1,6 @@
 {
   "name": "node-sql-parser-tibero",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "simple node sql parser For Tibero( forked from node-sql-parser)",
   "main": "index.js",
   "types": "types.d.ts",
@@ -8,7 +8,7 @@
     "start": "webpack --config webpack.config.js",
     "dev": "webpack-dev-server --config webpack.devserver.config.js --dev",
     "build_fake": "npm run compile && webpack --config webpack.config.js --prod",
-    "build": "npm run lint && npm run compile && webpack --config webpack.config.js --prod",    
+    "build": "npm run lint && npm run compile && webpack --config webpack.config.js --prod",
     "test": "npm run lint && mochapack \"test/**/*.spec.js\"",
     "lint": "eslint src",
     "compile": "babel src -d lib",

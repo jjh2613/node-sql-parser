@@ -13,17 +13,12 @@ function pivotOperatorToSQL(operator) {
   ]
   const sql = [`${toUpper(type)}(${result.join(' ')})`]
   if (as) {
-    if (as.as !== null && as.alias !== null) {
-      // only tibero
-
-      if (as.as) {
-        sql.push('AS', identifierToSql(as.alias))
-      } else {
-        sql.push(identifierToSql(as.alias))
-      }
-    } else {
-      // not tibero
+    if (typeof as === 'string') {
       sql.push('AS', identifierToSql(as))
+    } else if (as.as) {
+      sql.push('AS', identifierToSql(as.alias))
+    } else {
+      sql.push(identifierToSql(as.alias))
     }
   }
   return sql.join(' ')
@@ -46,7 +41,15 @@ function tableToSQL(tableInfo) {
   const tableName = table ? identifierToSql(table) : exprToSQL(expr)
   const str = [database, tableName].filter(hasVal).join('.')
   const result = [str, operatorToSQL(operator)]
-  if (as) result.push('AS', identifierToSql(as))
+  if (as) {
+    if (typeof as === 'string') {
+      result.push('AS', identifierToSql(as))
+    } else if (as.as) {
+      result.push('AS', identifierToSql(as.alias))
+    } else {
+      result.push(identifierToSql(as.alias))
+    }
+  }
   return result.filter(hasVal).join(' ')
 }
 

@@ -1700,10 +1700,6 @@ alias_clause
   = KW_AS __ i:alias_ident { /*=>alias_ident*/ return { alias: i, as: true}; }
   / KW_AS? __ i:ident { /*=>ident*/ return { alias: i, as: false}; }
 
-alias_clause_pivot
-  = KW_AS __ i:alias_ident { /*=>alias_ident*/ return i; }
-  / KW_AS? __ i:ident { /*=>ident*/ return i; }
-
 from_clause
   = KW_FROM __ l:table_ref_list __ op:pivot_operator? {
     if (l[0]) l[0].operator = op
